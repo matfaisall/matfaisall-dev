@@ -1,9 +1,13 @@
+import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  experimental: {
+    // Phosphor exports 1,500+ icons from one entry; this makes Next load only the ones we import.
+    optimizePackageImports: ["@phosphor-icons/react"],
+  },
   turbopack: {
     rules: {
       "*.css": {
@@ -14,4 +18,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Compiles `.mdx` files (blog posts in src/content/blog) into React components.
+// Plugins are passed by name because Turbopack can't receive JavaScript functions.
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: ["remark-gfm"],
+  },
+});
+
+export default withMDX(nextConfig);

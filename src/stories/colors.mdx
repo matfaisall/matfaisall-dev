@@ -1,0 +1,33 @@
+import { Meta, ColorPalette, ColorItem } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Colors" />
+
+# Colors
+
+Brand colour is **amber**; neutrals are **stone**. Every value is a CSS variable defined in
+`src/app/globals.css` and exposed to Tailwind as a semantic utility (`bg-primary`,
+`text-muted-foreground`, …). The swatches show the light theme; the dark values live in the
+`.dark` block of the same file. Switch the toolbar theme on any component story to see them applied.
+
+<ColorPalette>
+  <ColorItem
+    title="Primary"
+    subtitle="bg-primary · text-primary-foreground"
+    colors={{ primary: "var(--primary)", "primary-foreground": "var(--primary-foreground)" }}
+  />
+  <ColorItem
+    title="Surface"
+    subtitle="bg-background · text-foreground"
+    colors={{ background: "var(--background)", foreground: "var(--foreground)" }}
+  />
+  <ColorItem
+    title="Muted"
+    subtitle="bg-muted · text-muted-foreground"
+    colors={{ muted: "var(--muted)", "muted-foreground": "var(--muted-foreground)" }}
+  />
+  <ColorItem
+    title="Lines"
+    subtitle="border-border · ring-ring"
+    colors={{ border: "var(--border)", ring: "var(--ring)" }}
+  />
+</ColorPalette>

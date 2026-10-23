@@ -1,0 +1,25 @@
+export const metadata = {
+  title: "Hello, world",
+  summary: "Why I built this site and what I'll be writing about.",
+  publishedAt: "2026-10-23",
+  tags: ["Meta"],
+};
+
+{/* TODO: replace this example post with your first real one. */}
+
+This is an example post. Write in **Markdown**, and use React components when you need them.
+
+## Writing a new post
+
+1. Create `src/content/blog/<slug>.mdx`. The file name becomes the URL: `/blog/<slug>`.
+2. Export `metadata` at the top with `title`, `summary`, `publishedAt` and `tags`.
+3. Register it in `src/features/blog/posts.ts`.
+
+| Field         | Required | Example              |
+| ------------- | -------- | -------------------- |
+| `title`       | yes      | `"Hello, world"`     |
+| `summary`     | yes      | One sentence         |
+| `publishedAt` | yes      | `"2026-10-23"`       |
+| `updatedAt`   | no       | `"2026-11-01"`       |
+| `tags`        | yes      | `["Next.js"]`        |
+| `draft`       | no       | `true` hides it in production |
