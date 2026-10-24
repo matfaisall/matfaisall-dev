@@ -34,7 +34,7 @@ Tailwind CSS and GSAP.
 | Icons         | [Phosphor](https://phosphoricons.com) (`@phosphor-icons/react`) |
 | Animation     | [GSAP](https://gsap.com) + `@gsap/react` (ScrollTrigger, SplitText)                   |
 | Theming       | `next-themes` (light / dark / system)                                                 |
-| Typography    | [Inter](https://rsms.me/inter/) (primary) + JetBrains Mono, self-hosted via `next/font` |
+| Typography    | [Inter](https://rsms.me/inter/) (primary) + JetBrains Mono + Instrument Serif (display), self-hosted via `next/font` |
 | Components    | [Storybook 10](https://storybook.js.org) (Next.js + Vite), with docs, a11y and themes addons |
 | Code quality  | [Biome](https://biomejs.dev) (lint + format), Husky, lint-staged, commitlint          |
 | Content       | MDX blog posts via `@next/mdx` + `remark-gfm`, styled with `@tailwindcss/typography` |
@@ -133,8 +133,8 @@ topic lives in one folder.
     │
     ├── components/                # SHARED UI, used by any feature
     │   ├── ui/                    # Primitives: Button, Badge, Prose (article typography), Skeleton
-    │   ├── layout/                # Site chrome: ThemeToggle, ArticleSkeleton (header/footer later)
-    │   ├── motion/                # Animation components: Reveal, TextReveal, Parallax
+    │   ├── layout/                # Site chrome: SiteHeader, SiteFooter, AnnouncementBar, Section, StatStrip, ThemeToggle/Switcher
+    │   ├── motion/                # Animation components: Reveal, TextReveal, Parallax, RibbonCanvas
     │   ├── seo/                   # JsonLd
     │   └── providers/             # ThemeProvider
     │
@@ -143,7 +143,7 @@ topic lives in one folder.
     │   ├── seo.ts                 # createPageMetadata(), absoluteUrl(), JSON-LD helpers
     │   ├── date.ts                # formatDate()
     │   ├── og-image.tsx           # Shared template for social preview images
-    │   ├── fonts.ts               # Inter + JetBrains Mono
+    │   ├── fonts.ts               # Inter + JetBrains Mono + Instrument Serif
     │   └── utils.ts               # cn()
     │
     ├── config/site.ts             # Name, role, domain, links, nav: used by SEO and UI
@@ -368,8 +368,8 @@ Names in the table are the closest Tailwind palette colour. "≈" means a near m
 
 | Token | Utility | Light | Dark |
 | --- | --- | --- | --- |
-| `--primary` | `bg-primary`, `text-primary` | amber-700 | amber-800 |
-| `--primary-foreground` | `text-primary-foreground` | amber-50 | amber-50 |
+| `--primary` | `bg-primary`, `text-primary` | amber-700 | amber-500 |
+| `--primary-foreground` | `text-primary-foreground` | amber-50 | amber-950 |
 | `--background` | `bg-background` | white | ≈ stone-950 |
 | `--foreground` | `text-foreground` | ≈ stone-950 | ≈ stone-50 |
 | `--card`, `--popover` | `bg-card`, `bg-popover` | white | ≈ stone-900 |
@@ -391,9 +391,11 @@ How to use amber:
 
 - **As a fill:** `bg-primary text-primary-foreground` (buttons, highlights). Readable in both
   themes.
-- **As text:** `text-primary` is readable on the light background, but amber-800 is too dark on the
-  dark background. For text, pair it with a dark-mode alternative such as
-  `text-primary dark:text-foreground`, as `<Prose>` does for links.
+- **As text and lines:** `text-primary`, `border-primary`, `stroke-primary` are readable in both
+  themes (the dark theme uses the brighter amber-500 for this reason). Use it as an accent only:
+  a tag, a tick mark, one highlighted word. Body text stays `foreground` / `muted-foreground`.
+- **As a tint:** `bg-primary/10 text-primary` for small chips (stats, labels, the active file in a
+  mock UI), the way Mintlify uses its green.
 - Neutrals are warm greys (stone family), so they sit well next to amber.
 
 ### Typography
@@ -402,11 +404,15 @@ How to use amber:
 | ------- | ------------------------------- | ----------- | ------------------- |
 | Primary | [Inter](https://rsms.me/inter/) | `font-sans` | `--font-inter`      |
 | Mono    | JetBrains Mono                  | `font-mono` | `--font-jetbrains-mono` |
+| Display | [Instrument Serif](https://fonts.google.com/specimen/Instrument+Serif) | `font-display` | `--font-instrument-serif` |
+
+`font-display` is for the hero headline and the closing call to action only, set large with tight
+tracking (`tracking-[-0.02em]`). Section headings stay in Inter (`font-medium`), as on Mintlify.
 
 Fonts are loaded once in [`src/lib/fonts.ts`](src/lib/fonts.ts) with `next/font/google`. The files
 are self-hosted at build time, so there's no request to Google and no layout shift. The root layout
-and Storybook both apply `fontVariables`, and `globals.css` maps them to Tailwind's `font-sans` and
-`font-mono`. `font-sans` is the default on `<body>`. To change a typeface, edit `fonts.ts` and the
+and Storybook both apply `fontVariables`, and `globals.css` maps them to Tailwind's `font-sans`,
+`font-mono` and `font-display`. `font-sans` is the default on `<body>`. To change a typeface, edit `fonts.ts` and the
 matching line in `globals.css`.
 
 ### Storybook
@@ -424,7 +430,7 @@ story next to it.
 
 ## Design direction
 
-The UI is not built yet. Visual references for layout and look & feel:
+Visual references for layout and look & feel:
 
 1. **Primary: [mintlify.com](https://www.mintlify.com/).** Clean, documentation-style layout, generous
    whitespace, crisp typography, subtle gradients and a single strong brand colour.
@@ -433,9 +439,25 @@ The UI is not built yet. Visual references for layout and look & feel:
 
 Brand colour for both: **amber** (see [Design system](#design-system)).
 
+What we take from Mintlify, and where it lives:
+
+| Pattern | Implementation |
+| --- | --- |
+| Vertical rails that break now and then: a background layer behind every page; a band with `bg-background` covers them and runs edge to edge (home hero, stat strip), a transparent band sits between them. Horizontal hairlines span the full viewport | `app/(site)/layout.tsx`, `<Section>`, `<StatStrip>`, `home-hero.tsx` |
+| Two-tone section heading with a brand tick on the left rail | `components/layout/section.tsx` |
+| Serif display headline + Inter body | `font-display` (see [Typography](#typography)) |
+| Product shot in the hero | `features/about/components/code-window.tsx` (an editor window instead of an app) |
+| Animated twisted-ribbon line art | `components/motion/ribbon-canvas.tsx`, in brand colours via `brand-ribbon.tsx` |
+| Mono stat chips in a strip | `components/layout/stat-strip.tsx` |
+| Bento cards with small UI illustrations | `features/about/components/capabilities.tsx`, `project-preview.tsx` |
+| Crisp corners: `rounded-md` buttons and chips, `rounded-xl` cards | `components/ui/button.tsx`, `badge.tsx` |
+| Faint patterns behind decoration | `bg-grid`, `bg-dots` utilities in `globals.css`, faded with `mask-*` |
+
 ## Animation
 
-All animation runs on GSAP, set up once in [`src/lib/gsap.ts`](src/lib/gsap.ts).
+All animation runs on GSAP, set up once in [`src/lib/gsap.ts`](src/lib/gsap.ts). The one exception
+is `<RibbonCanvas>`, a Canvas 2D background with its own `requestAnimationFrame` loop: it redraws
+every frame, which is cheaper on a canvas than tweening.
 
 ### Motion components
 
@@ -446,6 +468,8 @@ Use these before writing a custom animation. Each one has a story under **Motion
 | `<Reveal>` | Fading a block's children up as it scrolls into view | Cards, lists, sections |
 | `<TextReveal>` | Sliding a heading up word by word from behind a mask | Hero title, section titles |
 | `<Parallax>` | Moving content slower or faster than the scroll | Images, decorative shapes |
+| `<RibbonCanvas>` | Animated twisted-ribbon background. Pauses off-screen, static for reduced motion | Behind a hero or CTA |
+| `<BrandRibbon>` | `<RibbonCanvas>` in amber, one gradient per theme | Hero, contact band |
 
 They're Client Components, but you can use them inside Server Components:
 
@@ -591,10 +615,10 @@ and a social preview checker such as [opengraph.xyz](https://www.opengraph.xyz/)
 - [x] Feature-based folders, import rules enforced with dependency-cruiser
 - [x] Tooling: Biome, Husky, lint-staged, commitlint
 - [x] Storybook with amber design tokens
-- [ ] Layout (header, footer, navigation) inspired by Mintlify
+- [x] Layout (header, footer, navigation) inspired by Mintlify
 - [x] Routes: `/about`, `/projects`, `/projects/<slug>`, `/blog`, `/blog/<slug>` (unstyled)
 - [x] MDX blog with typed, validated metadata
-- [ ] Sections: hero, about, projects, experience, contact
+- [ ] Sections: hero, about, projects, experience, contact (home page done; experience pending)
 - [ ] RSS feed for the blog
 - [ ] Real content in `config/site.ts` and feature data files
 - [x] SEO: metadata, Open Graph images, JSON-LD, sitemap, robots, manifest
