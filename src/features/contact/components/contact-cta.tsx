@@ -1,4 +1,5 @@
 import { EnvelopeSimpleIcon, LinkedinLogoIcon } from "@phosphor-icons/react/ssr";
+import { PlainMargins } from "@/components/layout/plain-margins";
 import { BrandRibbon } from "@/components/motion/brand-ribbon";
 import { Button } from "@/components/ui/button";
 
@@ -15,6 +16,7 @@ export function ContactCta({ email, linkedinUrl }: ContactCtaProps) {
       aria-labelledby="contact-heading"
       className="relative overflow-hidden border-border border-t"
     >
+      <PlainMargins />
       {/* From the middle to the viewport edge, crossing the right rail, so it never runs behind
           the copy. Desktop only: no free space when stacked. */}
       <BrandRibbon className="mask-l-from-50% absolute inset-y-0 right-0 left-1/2 hidden lg:block" />

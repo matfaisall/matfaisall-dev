@@ -454,6 +454,7 @@ What we take from Mintlify, and where it lives:
 | Pattern | Implementation |
 | --- | --- |
 | Vertical rails that break now and then: a background layer behind every page; a band with `bg-background` covers them and runs edge to edge (home hero, stat strip), a transparent band sits between them. Horizontal hairlines span the full viewport | `app/(site)/layout.tsx`, `<Section>`, `<StatStrip>`, `home-hero.tsx` |
+| Margins that change texture from band to band: dots by default, plain background where a band asks for it (`<Section margins="plain">`, or `<PlainMargins />` inside any `relative` band). On the home page they alternate from the stat strip down | `components/layout/plain-margins.tsx`, `<Section>`, `contact-cta.tsx` |
 | Two-tone section heading with a brand tick on the left rail | `components/layout/section.tsx` |
 | Serif display headline + Inter body | `font-display` (see [Typography](#typography)) |
 | Product shot in the hero | `features/about/components/code-window.tsx`: an editor window with `about.ts`, `projects.ts` and `contact.ts`; click a file in the sidebar (or a tab on small screens) to open it. File contents come from `code-files.ts` |

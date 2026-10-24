@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { PlainMargins } from "@/components/layout/plain-margins";
 import { cn } from "@/lib/utils";
 
 type SectionProps = {
@@ -15,6 +16,11 @@ type SectionProps = {
    * no rails, nothing clipped at the container. For carousels and other wide content.
    */
   bleed?: boolean;
+  /**
+   * What fills the margins beside the rails: the site-wide dot pattern or the plain background.
+   * Alternate them down a page so the margins don't read as one long texture.
+   */
+  margins?: "dots" | "plain";
   className?: string;
   children: ReactNode;
 };
@@ -29,6 +35,7 @@ export function Section({
   description,
   action,
   bleed = false,
+  margins = "dots",
   className,
   children,
 }: SectionProps) {
@@ -60,8 +67,13 @@ export function Section({
     <section
       id={id}
       aria-labelledby={headingId}
-      className={cn("scroll-mt-16 border-border border-t", className)}
+      className={cn(
+        "scroll-mt-16 border-border border-t",
+        margins === "plain" && "relative",
+        className,
+      )}
     >
+      {margins === "plain" && <PlainMargins />}
       {bleed ? (
         <>
           <div className="mx-auto max-w-6xl px-6 pt-20 pb-12 md:px-12 md:pt-28 md:pb-16">

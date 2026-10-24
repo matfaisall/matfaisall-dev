@@ -66,6 +66,7 @@ export default function HomePage() {
           title="Selected work."
           description="A few things I've designed, built and shipped."
           bleed
+          margins="plain"
           action={
             <div className="flex items-center gap-2">
               <CarouselPrevious label="Previous project" />
