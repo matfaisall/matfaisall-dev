@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { type ReactNode, useRef } from "react";
 import {
   DURATION,
   EASE,
@@ -14,11 +14,14 @@ import {
 import { cn } from "@/lib/utils";
 
 type TextRevealProps = {
-  children: string;
+  /** Text, optionally with inline elements such as an accent `<em>`: SplitText keeps them. */
+  children: ReactNode;
   /** HTML element to render. Use the right heading level for SEO, not the one that looks right. */
   as?: "h1" | "h2" | "h3" | "p";
   /** "load" animates right away (above the fold), "scroll" when the text enters the viewport. */
   trigger?: "load" | "scroll";
+  /** For a heading other elements point at, e.g. with `aria-labelledby`. */
+  id?: string;
   className?: string;
 };
 
@@ -27,6 +30,7 @@ export function TextReveal({
   children,
   as: Tag = "h2",
   trigger = "scroll",
+  id,
   className,
 }: TextRevealProps) {
   const ref = useRef<HTMLHeadingElement>(null);
@@ -62,6 +66,7 @@ export function TextReveal({
   return (
     <Tag
       ref={ref}
+      id={id}
       data-animate
       // Line masks clip descenders (g, p, y); a little padding keeps them visible.
       className={cn("*:mb-[-0.15em] *:pb-[0.15em]", className)}

@@ -2,11 +2,12 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 
 // Register plugins once; every animated component imports gsap from here.
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
+gsap.registerPlugin(useGSAP, MotionPathPlugin, ScrollTrigger, SplitText);
 
 /** Wrap every animation in `gsap.matchMedia().add(FULL_MOTION, …)` so reduced-motion users get a static page. */
 export const FULL_MOTION = "(prefers-reduced-motion: no-preference)";
@@ -37,4 +38,4 @@ export const STAGGER = {
 /** ScrollTrigger start position for "animate when it enters the viewport". */
 export const SCROLL_START = "top 85%";
 
-export { gsap, ScrollTrigger, SplitText, useGSAP };
+export { gsap, MotionPathPlugin, ScrollTrigger, SplitText, useGSAP };

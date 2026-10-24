@@ -134,7 +134,7 @@ topic lives in one folder.
     ├── components/                # SHARED UI, used by any feature
     │   ├── ui/                    # Primitives: Button, Badge, Carousel, Prose (article typography), Skeleton
     │   ├── layout/                # Site chrome: SiteHeader, SiteFooter, AnnouncementBar, Section, StatStrip, ThemeToggle/Switcher
-    │   ├── motion/                # Animation components: Reveal, TextReveal, Parallax, RibbonCanvas
+    │   ├── motion/                # Animation components: Reveal, TextReveal, Parallax, Wipe, PathDot, RibbonCanvas
     │   ├── seo/                   # JsonLd
     │   └── providers/             # ThemeProvider
     │
@@ -481,6 +481,8 @@ Use these before writing a custom animation. Each one has a story under **Motion
 | `<Reveal>` | Fading a block's children up as it scrolls into view | Cards, lists, sections |
 | `<TextReveal>` | Sliding a heading up word by word from behind a mask | Hero title, section titles |
 | `<Parallax>` | Moving content slower or faster than the scroll | Images, decorative shapes |
+| `<Wipe>` | Uncovering content left to right as it scrolls into view, like a line being drawn | Charts, curves, timelines |
+| `<PathDot>` | A dot looping along an SVG path, paused off screen. Render it inside the `<svg>` | Illustrations, diagrams |
 | `<RibbonCanvas>` | Animated twisted-ribbon background. Pauses off-screen, static for reduced motion | Behind a hero or CTA |
 | `<BrandRibbon>` | `<RibbonCanvas>` in amber, one gradient per theme | Hero, contact band |
 
