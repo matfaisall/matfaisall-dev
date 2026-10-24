@@ -15,6 +15,12 @@ const meta = {
     skills: ["Next.js", "React", "TypeScript", "Tailwind CSS", "GSAP"],
     focus: ["performance", "motion", "accessibility"],
     githubUrl: "https://github.com/matfaisall",
+    email: "hello@example.com",
+    projects: [
+      { title: "Example Project", year: 2026 },
+      { title: "Example Dashboard", year: 2026 },
+      { title: "Example Landing Page", year: 2025 },
+    ],
   },
 } satisfies Meta<typeof HomeHero>;
 

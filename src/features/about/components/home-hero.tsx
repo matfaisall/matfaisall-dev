@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import { BrandRibbon } from "@/components/motion/brand-ribbon";
 import { TextReveal } from "@/components/motion/text-reveal";
 import { Button } from "@/components/ui/button";
+import { aboutFile, contactFile, projectsFile } from "@/features/about/components/code-files";
 import { CodeWindow } from "@/features/about/components/code-window";
 
 type HomeHeroProps = {
@@ -16,6 +17,9 @@ type HomeHeroProps = {
   skills: string[];
   focus: string[];
   githubUrl: string;
+  email: string;
+  /** Typed out in the code window's projects.ts. A few is plenty. */
+  projects: { title: string; year: number }[];
 };
 
 /** "Next.js, React and TypeScript", with each item emphasised. */
@@ -37,7 +41,15 @@ export function HomeHero({
   skills,
   focus,
   githubUrl,
+  email,
+  projects,
 }: HomeHeroProps) {
+  const files = [
+    aboutFile({ handle, name, role, location, skills: skills.slice(0, 4), focus }),
+    projectsFile(projects),
+    contactFile({ email, githubUrl }),
+  ];
+
   return (
     <section aria-label="Introduction" className="relative overflow-hidden bg-background">
       {/* Edge to edge: this band covers the rails, so the grid and ribbon run off both sides. */}
@@ -97,15 +109,7 @@ export function HomeHero({
           </div>
         </div>
 
-        <CodeWindow
-          handle={handle}
-          name={name}
-          role={role}
-          location={location}
-          skills={skills.slice(0, 4)}
-          focus={focus}
-          className="lg:translate-y-8"
-        />
+        <CodeWindow handle={handle} files={files} className="lg:translate-y-8" />
       </div>
     </section>
   );

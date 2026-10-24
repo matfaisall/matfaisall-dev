@@ -38,6 +38,8 @@ export default function HomePage() {
         skills={about.skills}
         focus={about.capabilities.map((capability) => capability.visual)}
         githubUrl={siteConfig.socials.github}
+        email={siteConfig.email}
+        projects={getFeaturedProjects().slice(0, 3)}
       />
       <StatStrip
         title="At a glance"

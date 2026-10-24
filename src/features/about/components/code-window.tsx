@@ -1,76 +1,36 @@
-import { FileTsIcon, FolderOpenIcon } from "@phosphor-icons/react/ssr";
-import { cn } from "@/lib/utils";
+"use client";
 
-type TokenKind = "keyword" | "key" | "string" | "punctuation" | "comment" | "plain";
-type Token = { text: string; kind: TokenKind };
-type Line = Token[];
+import { FileTsIcon, FolderOpenIcon } from "@phosphor-icons/react/ssr";
+import { useState } from "react";
+import type { CodeFile, TokenKind } from "@/features/about/components/code-files";
+import { cn } from "@/lib/utils";
 
 const tokenClass: Record<TokenKind, string> = {
   keyword: "text-primary",
   key: "text-muted-foreground",
   string: "text-foreground",
+  number: "text-primary",
   punctuation: "text-muted-foreground/70",
   comment: "text-muted-foreground/60 italic",
   plain: "text-foreground",
 };
 
-const t = (text: string, kind: TokenKind = "plain"): Token => ({ text, kind });
-
-/** `  key: "value",` */
-function property(key: string, value: string): Line {
-  return [
-    t(`  ${key}`, "key"),
-    t(": ", "punctuation"),
-    t(`"${value}"`, "string"),
-    t(",", "punctuation"),
-  ];
-}
-
-/** `  key: [` + two strings per line + `  ],` so long lists never overflow the window. */
-function list(key: string, values: string[]): Line[] {
-  const rows: Line[] = [];
-  for (let i = 0; i < values.length; i += 2) {
-    const pair = values.slice(i, i + 2);
-    rows.push([
-      t("    "),
-      ...pair.flatMap((value) => [t(`"${value}"`, "string"), t(", ", "punctuation")]),
-    ]);
-  }
-  return [[t(`  ${key}`, "key"), t(": [", "punctuation")], ...rows, [t("  ],", "punctuation")]];
-}
-
-const files = ["about.ts", "projects.ts", "writing.ts", "contact.ts"];
-
 type CodeWindowProps = {
   handle: string;
-  name: string;
-  role: string;
-  location: string;
-  skills: string[];
-  focus: string[];
+  /** Click one to open it. The first one is open to start with. */
+  files: CodeFile[];
   className?: string;
 };
 
-/** An editor window that introduces you as a TypeScript object. The hero's "product shot". */
-export function CodeWindow({
-  handle,
-  name,
-  role,
-  location,
-  skills,
-  focus,
-  className,
-}: CodeWindowProps) {
-  const lines: Line[] = [
-    [t("// The short version.", "comment")],
-    [t("export const ", "keyword"), t(handle), t(" = {", "punctuation")],
-    property("name", name),
-    property("role", role),
-    property("location", location),
-    ...list("stack", skills),
-    ...list("focus", focus),
-    [t("} ", "punctuation"), t("satisfies ", "keyword"), t("Engineer"), t(";", "punctuation")],
-  ];
+/**
+ * An editor window that introduces you as TypeScript files. The hero's "product shot". Files are
+ * picked from the sidebar, or from the tab bar on small screens where the sidebar is hidden.
+ */
+export function CodeWindow({ handle, files, className }: CodeWindowProps) {
+  const [active, setActive] = useState(0);
+  const file = files[active];
+  // Tall enough for the longest file, so opening another file never moves the hero.
+  const maxLines = Math.max(...files.map((f) => f.lines.length));
 
   return (
     <div
@@ -92,30 +52,56 @@ export function CodeWindow({
             <FolderOpenIcon className="size-3.5" aria-hidden="true" />
             src
           </p>
-          {files.map((file, index) => (
-            <p
-              key={file}
+          {files.map((f, index) => (
+            <button
+              key={f.name}
+              type="button"
+              aria-pressed={index === active}
+              onClick={() => setActive(index)}
               className={cn(
-                "flex items-center gap-1.5 rounded-md py-1 pr-2 pl-5 font-mono text-muted-foreground",
-                index === 0 && "bg-primary/10 text-primary",
+                "flex items-center gap-1.5 rounded-md py-1 pr-2 pl-5 text-left font-mono transition-colors",
+                index === active
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
               )}
             >
               <FileTsIcon className="size-3.5 shrink-0" aria-hidden="true" />
-              {file}
-            </p>
+              {f.name}
+            </button>
           ))}
         </div>
 
         <div className="min-w-0">
           <div className="flex border-border border-b font-mono text-xs">
-            <span className="-mb-px border-primary border-b px-4 py-2.5 text-foreground">
-              about.ts
+            {/* Small screens: no sidebar, so every file gets a tab to switch with. */}
+            {files.map((f, index) => (
+              <button
+                key={f.name}
+                type="button"
+                aria-pressed={index === active}
+                onClick={() => setActive(index)}
+                className={cn(
+                  "-mb-px border-b px-4 py-2.5 transition-colors sm:hidden",
+                  index === active
+                    ? "border-primary text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {f.name}
+              </button>
+            ))}
+            {/* With the sidebar to switch, the tab bar only names the open file. */}
+            <span className="-mb-px hidden border-primary border-b px-4 py-2.5 text-foreground sm:block">
+              {file.name}
             </span>
-            <span className="px-4 py-2.5 text-muted-foreground">projects.ts</span>
           </div>
-          <pre className="overflow-x-auto p-4 text-[13px] leading-6">
-            <code>
-              {lines.map((line, row) => (
+
+          <pre
+            className="overflow-x-auto p-4 text-[13px] leading-6"
+            style={{ minHeight: `calc(${maxLines} * 1.5rem + 2rem)` }}
+          >
+            <code key={file.name} className="motion-safe:fade-in block motion-safe:animate-in">
+              {file.lines.map((line, row) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: lines are static and never reorder.
                 <span key={row} className="block whitespace-pre">
                   <span className="mr-4 inline-block w-4 select-none text-right text-muted-foreground/40">
