@@ -571,6 +571,7 @@ SEO is built into the routes, so a new page only needs one line of metadata.
 | Sitemap | `app/sitemap.ts` → `/sitemap.xml` | Every page, project and post, with `lastModified` for posts |
 | Robots | `app/robots.ts` → `/robots.txt` | Allows crawling and points to the sitemap |
 | Manifest | `app/manifest.ts` → `/manifest.webmanifest` | Name, colours and icon for "Add to home screen" |
+| Logo and icons | `public/brand/`, `components/layout/logo.tsx`, `app/favicon.ico`, `app/apple-icon.png`, `public/icon-*.png` | The amber "F": two blades sweeping up and to the right. `public/brand/` holds the masters: `logo-mark.svg` (the mark alone), `logo-mark-mono.svg` (one colour) and `logo-icon.svg` (on a dark tile, for avatars), with 1024px PNGs. The favicon is the bare mark; the Apple and maskable icons are full-bleed dark squares because the OS cuts the corners. `<Logo>` inlines the same paths |
 | Static pages | `generateStaticParams` in `projects/[slug]` and `blog/[slug]` | Every page is prerendered to HTML: fast, and fully readable by crawlers |
 
 Adding a page:
