@@ -160,6 +160,14 @@ the sitemap, and gets its own page and preview image. Optional fields shape its 
 carousel: `cover` (a screenshot in `/public/projects/` or a remote image whose host is in
 `images.remotePatterns`), `accent` (panel colour) and `highlights` (two big numbers).
 
+The tech stack grid on the home page reads `stack` in `features/about/data.ts`. To add a tool, put a
+square WebP in `public/stack/` (about 120px; e.g. download the SVG from
+[simpleicons.org](https://simpleicons.org), CC0, and convert it with [Squoosh](https://squoosh.app))
+and add `{ name, icon: "/stack/<file>.webp", docs: "<official docs URL>" }`. Set
+`invertInDark: true` for a black logo. The grid shows eight tools and swaps to the next eight every
+five seconds (pausing under the mouse, on keyboard focus, off screen and in background tabs), so
+keep the list at a multiple of eight to avoid repeats. Each tile opens its docs in a new tab.
+
 Empty folders hold a `.gitkeep` so they show up in Git. Delete it once the folder has real files.
 
 ### How a page is built
@@ -452,6 +460,7 @@ What we take from Mintlify, and where it lives:
 | Animated twisted-ribbon line art | `components/motion/ribbon-canvas.tsx`, in brand colours via `brand-ribbon.tsx` |
 | Mono stat chips in a strip | `components/layout/stat-strip.tsx` |
 | Bento cards with small UI illustrations | `features/about/components/capabilities.tsx`, `project-preview.tsx` |
+| Customer logo band ("Join 20,000+ …"): a line and a link on the left, eight logo tiles on the right that swap in a diagonal wave every few seconds, split by a hairline | `features/about/components/tech-stack.tsx`, `tech-grid.tsx`, icons in `public/stack/` |
 | Customer-story carousel: wide coloured cards with a photo in their own edge-to-edge band (hairlines above and below, no rails), arrows in the section header, previous and next cards visible at the sides and faded by scroll position (`carousel-dim`) | `components/ui/carousel.tsx`, `<Section bleed>`, `features/projects/components/project-showcase.tsx`, `project-story.tsx` |
 | Crisp corners: `rounded-md` buttons and chips, `rounded-xl` cards | `components/ui/button.tsx`, `badge.tsx` |
 | Faint patterns behind decoration | `bg-grid`, `bg-dots` utilities in `globals.css`, faded with `mask-*` |

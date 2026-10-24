@@ -9,6 +9,7 @@ import { Carousel, CarouselNext, CarouselPrevious } from "@/components/ui/carous
 import { siteConfig } from "@/config/site";
 import { Capabilities } from "@/features/about/components/capabilities";
 import { HomeHero } from "@/features/about/components/home-hero";
+import { TechStack } from "@/features/about/components/tech-stack";
 import { about } from "@/features/about/data";
 import { PostList } from "@/features/blog/components/post-list";
 import { getPosts } from "@/features/blog/data";
@@ -42,6 +43,7 @@ export default function HomePage() {
         email={siteConfig.email}
         projects={getFeaturedProjects().slice(0, 3)}
       />
+      <TechStack stack={about.stack} githubUrl={siteConfig.socials.github} />
       <StatStrip
         title="At a glance"
         stats={[

@@ -16,6 +16,17 @@ export type Capability = {
   visual: "performance" | "motion" | "accessibility";
 };
 
+/** One tool in the tech stack grid on the home page. */
+export type Tech = {
+  name: string;
+  /** A square WebP in /public/stack, e.g. "/stack/react.webp". Shown at 40px, so 120px is plenty. */
+  icon: string;
+  /** Official documentation. The tile opens it in a new tab. */
+  docs: string;
+  /** For a black, single-colour logo (Next.js, shadcn/ui): inverted to white in dark mode. */
+  invertInDark?: boolean;
+};
+
 export type About = {
   /** One sentence for the home page hero. */
   headline: string;
@@ -24,5 +35,10 @@ export type About = {
   /** Most important first: the hero highlights the first three. */
   skills: string[];
   capabilities: Capability[];
+  /**
+   * The tools grid on the home page shows eight at a time and swaps to the next eight every few
+   * seconds, so a multiple of eight rotates without repeats.
+   */
+  stack: Tech[];
   experience: Experience[];
 };
