@@ -116,7 +116,7 @@ topic lives in one folder.
     │
     ├── features/                  # ONE FOLDER PER TOPIC
     │   ├── about/                 # Who you are
-    │   │   ├── components/        # about-intro.tsx, experience-list.tsx (+ stories)
+    │   │   ├── components/        # about-hero, growth-stats, experience-list, education-list, favourite-quote … (+ stories)
     │   │   ├── data.ts            # Your bio, skills and work history
     │   │   └── types.ts           # About, Experience
     │   ├── projects/
@@ -186,7 +186,7 @@ page that shows your intro, featured projects and latest posts imports from `fea
 export default function HomePage() {
   return (
     <>
-      <AboutIntro name={siteConfig.name} role={siteConfig.role} bio={about.bio} skills={about.skills} />
+      <AboutHero name={siteConfig.name} role={siteConfig.role} intro={about.intro} bio={about.bio} … />
       <ProjectList projects={getFeaturedProjects()} />
       <PostList posts={getPosts().slice(0, 3)} />
     </>

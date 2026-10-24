@@ -6,7 +6,7 @@ import { getPosts } from "@/features/blog/data";
 // Layout for the public site: announcement bar, sticky header, page, footer. Two vertical rails
 // (Mintlify-style) run behind everything as a background layer, so a band picks its own look:
 // leave its background transparent to sit between the rails, or give it `bg-background` to cover
-// them and run edge to edge (the home hero and stat strip do this).
+// them and run edge to edge (the home and About heroes and the stat strip do this).
 export default function SiteLayout({ children }: LayoutProps<"/">) {
   const [latestPost] = getPosts();
 

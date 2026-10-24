@@ -9,17 +9,30 @@ const meta = {
   args: {
     experience: [
       {
-        company: "Company Name",
-        role: "Frontend Engineer",
-        start: "2024-03",
-        summary: "What you built, owned or improved there, in one or two sentences.",
+        company: "Current Company",
+        role: "Frontend Developer",
+        start: "2025-12",
+        workplace: "On-site",
+        visual: "sprint",
+      },
+      {
+        company: "Side Project Studio",
+        role: "Frontend Web Developer",
+        start: "2025-07",
+        end: "2025-12",
+        employment: "Part-time",
+        workplace: "Remote",
+        visual: "review",
       },
       {
         company: "Previous Company",
-        role: "Junior Developer",
-        start: "2022-01",
-        end: "2024-02",
-        summary: "What you built, owned or improved there, in one or two sentences.",
+        role: "Frontend Web Developer",
+        start: "2023-11",
+        end: "2025-08",
+        summary: "What you owned there, in one or two sentences.",
+        highlights: ["Something you built.", "Something you made faster or simpler."],
+        stack: ["React", "Next.js", "TypeScript"],
+        visual: "pipeline",
       },
     ],
   },
@@ -28,6 +41,24 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * The current role (no `end`) gets a filled node and a "Now" chip; past roles show how long they
+ * lasted. `visual` picks the illustration beside the text.
+ */
 export const Default: Story = {};
+
+export const WithoutVisuals: Story = {
+  args: {
+    experience: [
+      {
+        company: "Previous Company",
+        role: "Frontend Web Developer",
+        start: "2023-11",
+        end: "2025-08",
+        summary: "What you owned there, in one or two sentences.",
+      },
+    ],
+  },
+};
 
 export const Empty: Story = { args: { experience: [] } };
