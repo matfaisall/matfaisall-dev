@@ -1,5 +1,6 @@
 import { CheckIcon } from "@phosphor-icons/react/ssr";
 import type { ComponentType } from "react";
+import { PathDot } from "@/components/motion/path-dot";
 import { Reveal } from "@/components/motion/reveal";
 import type { Capability } from "@/features/about/types";
 
@@ -61,9 +62,7 @@ function MotionVisual() {
         <path d={curve} className="stroke-primary" strokeWidth="2" />
         <circle cx="54.4" cy="59" r="3" className="fill-background stroke-primary" />
         <circle cx="76.8" cy="20" r="3" className="fill-background stroke-primary" />
-        <circle r="4" className="fill-primary motion-reduce:hidden">
-          <animateMotion dur="2.4s" repeatCount="indefinite" path={curve} />
-        </circle>
+        <PathDot path={curve} className="fill-primary" />
       </svg>
       <div className="flex gap-2 font-mono text-[10px]">
         <span className="rounded-sm border border-border bg-background px-1.5 py-0.5 text-muted-foreground">
