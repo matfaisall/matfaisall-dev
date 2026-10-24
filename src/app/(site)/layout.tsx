@@ -26,7 +26,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-[5] mx-auto hidden max-w-6xl border-border border-x bg-background md:block"
+          className="pointer-events-none absolute inset-0 -z-5 mx-auto hidden max-w-6xl border-border border-x bg-background md:block"
         />
         <main className="flex-1">{children}</main>
         <SiteFooter />

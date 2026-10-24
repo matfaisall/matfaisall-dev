@@ -113,7 +113,7 @@ export function TechGrid({ stack }: { stack: Tech[] }) {
             href={tech.docs}
             target="_blank"
             rel="noreferrer"
-            className="group relative flex aspect-[3/2] items-center justify-center overflow-hidden rounded-lg border border-border bg-muted/30 outline-none transition-colors hover:border-foreground/20 hover:bg-muted/60 focus-visible:border-primary sm:aspect-square"
+            className="group relative flex aspect-3/2 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted/30 outline-none transition-colors hover:border-foreground/20 hover:bg-muted/60 focus-visible:border-primary sm:aspect-square"
           >
             <span
               className={cn(

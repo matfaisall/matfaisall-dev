@@ -64,7 +64,7 @@ export function TextReveal({
       ref={ref}
       data-animate
       // Line masks clip descenders (g, p, y); a little padding keeps them visible.
-      className={cn("[&>*]:-mb-[0.15em] [&>*]:pb-[0.15em]", className)}
+      className={cn("*:mb-[-0.15em] *:pb-[0.15em]", className)}
     >
       {children}
     </Tag>

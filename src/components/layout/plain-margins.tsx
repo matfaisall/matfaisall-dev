@@ -7,7 +7,7 @@ export function PlainMargins() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 -z-[1] hidden bg-background md:block"
+      className="pointer-events-none absolute inset-0 -z-1 hidden bg-background md:block"
     >
       <div className="mx-auto h-full max-w-6xl border-border border-x" />
     </div>

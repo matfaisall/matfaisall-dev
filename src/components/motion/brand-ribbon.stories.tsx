@@ -6,7 +6,7 @@ const meta = {
   component: BrandRibbon,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
-  args: { className: "h-[32rem] w-full" },
+  args: { className: "h-128 w-full" },
 } satisfies Meta<typeof BrandRibbon>;
 
 export default meta;
@@ -16,5 +16,5 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const FadedLeft: Story = {
-  args: { className: "h-[32rem] w-full mask-l-from-40% mask-l-to-80%" },
+  args: { className: "h-128 w-full mask-l-from-40% mask-l-to-80%" },
 };

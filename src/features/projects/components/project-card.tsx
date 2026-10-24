@@ -10,7 +10,7 @@ export function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-muted/20 transition-colors hover:border-foreground/20">
-      <div className="relative aspect-[16/9] overflow-hidden border-border border-b">
+      <div className="relative aspect-video overflow-hidden border-border border-b">
         {project.cover ? (
           <Image
             src={project.cover.src}

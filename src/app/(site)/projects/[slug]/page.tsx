@@ -70,7 +70,7 @@ async function ProjectDetails({ params }: { params: Params }) {
       </ul>
       {project.cover && (
         <figure className="mt-12">
-          <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-border bg-muted">
+          <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-muted">
             <Image
               src={project.cover.src}
               alt={project.cover.alt}

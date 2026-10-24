@@ -23,7 +23,7 @@ const meta = {
   title: "Features/About/CodeWindow",
   component: CodeWindow,
   tags: ["autodocs"],
-  args: { handle: "matfaisall", files, className: "w-[36rem]" },
+  args: { handle: "matfaisall", files, className: "w-xl" },
 } satisfies Meta<typeof CodeWindow>;
 
 export default meta;

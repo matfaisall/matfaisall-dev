@@ -9,7 +9,7 @@ const meta = {
   args: { slug: "example-project", title: "Example Project" },
   decorators: [
     (Story) => (
-      <div className="group aspect-[16/9] w-96 overflow-hidden rounded-xl border border-border">
+      <div className="group aspect-video w-96 overflow-hidden rounded-xl border border-border">
         <Story />
       </div>
     ),

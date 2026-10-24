@@ -35,7 +35,7 @@ export function ProjectStory({ project, fallbackAccent }: ProjectStoryProps) {
   ];
 
   return (
-    <article className="grid h-full overflow-hidden rounded-xl lg:h-[30rem] lg:grid-cols-2">
+    <article className="grid h-full overflow-hidden rounded-xl lg:h-120 lg:grid-cols-2">
       <div
         className={cn(
           "relative flex flex-col p-8 text-white lg:p-10",
@@ -71,7 +71,7 @@ export function ProjectStory({ project, fallbackAccent }: ProjectStoryProps) {
         </div>
       </div>
 
-      <div className="relative aspect-[5/4] bg-muted lg:aspect-auto">
+      <div className="relative aspect-5/4 bg-muted lg:aspect-auto">
         {project.cover ? (
           <>
             <Image

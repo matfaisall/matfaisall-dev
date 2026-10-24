@@ -60,7 +60,7 @@ export function HomeHero({
       {/* Desktop only: stacked, the code window would cover it. The mask is drawn in container
           units, so at any width the ribbon enters from the left edge, vanishes behind the copy
           (the container's left half) and comes back for the code window and the right edge. */}
-      <BrandRibbon className="absolute inset-0 hidden [mask-image:linear-gradient(to_right,black,transparent_calc(50%_-_38rem),transparent_calc(50%_-_2rem),black_calc(50%_+_6rem))] lg:block" />
+      <BrandRibbon className="mask-[linear-gradient(to_right,black,transparent_calc(50%-38rem),transparent_calc(50%-2rem),black_calc(50%+6rem))] absolute inset-0 hidden lg:block" />
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 pt-14 pb-20 md:px-12 md:pt-24 md:pb-28 lg:grid-cols-[1fr_1.1fr]">
         <div className="flex flex-col items-start">

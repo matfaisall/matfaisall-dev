@@ -166,7 +166,7 @@ export function CarouselTrack({ label, className, children, ...props }: Carousel
       aria-label={label}
       aria-roledescription="carousel"
       className={cn(
-        "relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        "scrollbar-none relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain [&::-webkit-scrollbar]:hidden",
         className,
       )}
       {...props}
