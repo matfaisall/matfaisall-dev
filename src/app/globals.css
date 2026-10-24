@@ -56,8 +56,9 @@
   --card-foreground: oklch(0.986 0.002 67.8);
   --popover: oklch(0.214 0.009 43.1);
   --popover-foreground: oklch(0.986 0.002 67.8);
-  --primary: oklch(0.473 0.137 46.201);
-  --primary-foreground: oklch(0.987 0.022 95.277);
+  /* Brighter amber than light mode so it also works as text, lines and glows on the dark surface. */
+  --primary: oklch(0.769 0.188 70.08);
+  --primary-foreground: oklch(0.279 0.077 45.635);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.268 0.011 36.5);
@@ -97,6 +98,8 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  /* Serif for hero and closing headlines only. */
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -165,6 +168,22 @@
   pre {
     @apply font-mono;
   }
+}
+
+/*
+ * Background patterns for decorative surfaces (hero, card previews). Both draw with --border, so
+ * they stay faint in either theme. Fade the edges with Tailwind's mask utilities.
+ */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@utility bg-dots {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 14px 14px;
 }
 
 /*

@@ -1,4 +1,4 @@
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
 
 // Shared by the root layout and Storybook so both render the same typography.
 // next/font self-hosts the files at build time, so visitors never request Google Fonts.
@@ -17,4 +17,12 @@ export const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
-export const fontVariables = `${inter.variable} ${jetBrainsMono.variable}`;
+/** Display serif for hero and closing headlines only (`font-display`). Ships in one weight. */
+export const instrumentSerif = Instrument_Serif({
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument-serif",
+});
+
+export const fontVariables = `${inter.variable} ${jetBrainsMono.variable} ${instrumentSerif.variable}`;
