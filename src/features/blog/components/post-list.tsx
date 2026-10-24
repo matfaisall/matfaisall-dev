@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/motion/reveal";
 import { PostCard } from "@/features/blog/components/post-card";
 import type { Post } from "@/features/blog/types";
 
@@ -7,10 +8,10 @@ export function PostList({ posts }: { posts: Post[] }) {
   }
 
   return (
-    <div className="grid gap-6">
+    <Reveal className="divide-y divide-border overflow-hidden rounded-xl border border-border">
       {posts.map((post) => (
         <PostCard key={post.slug} post={post} />
       ))}
-    </div>
+    </Reveal>
   );
 }
