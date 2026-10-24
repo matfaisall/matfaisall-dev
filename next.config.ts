@@ -4,8 +4,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com", pathname: "/**" }],
+  },
   experimental: {
-    // Phosphor exports 1,500+ icons from one entry; this makes Next load only the ones we import.
     optimizePackageImports: ["@phosphor-icons/react"],
   },
   turbopack: {

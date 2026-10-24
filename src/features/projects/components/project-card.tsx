@@ -1,4 +1,5 @@
 import { ArrowUpRightIcon } from "@phosphor-icons/react/ssr";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { ProjectPreview } from "@/features/projects/components/project-preview";
 import type { Project } from "@/features/projects/types";
@@ -9,8 +10,18 @@ export function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-muted/20 transition-colors hover:border-foreground/20">
-      <div className="aspect-[16/9] border-border border-b">
-        <ProjectPreview slug={project.slug} title={project.title} />
+      <div className="relative aspect-[16/9] overflow-hidden border-border border-b">
+        {project.cover ? (
+          <Image
+            src={project.cover.src}
+            alt={project.cover.alt}
+            fill
+            sizes="(min-width: 768px) 36rem, 100vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <ProjectPreview slug={project.slug} title={project.title} />
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-6">
         <div className="flex items-center justify-between font-mono text-muted-foreground text-xs">

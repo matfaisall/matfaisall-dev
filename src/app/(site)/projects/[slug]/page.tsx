@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import type { CreativeWork } from "schema-dts";
@@ -67,6 +68,25 @@ async function ProjectDetails({ params }: { params: Params }) {
           </li>
         ))}
       </ul>
+      {project.cover && (
+        <figure className="mt-12">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-border bg-muted">
+            <Image
+              src={project.cover.src}
+              alt={project.cover.alt}
+              fill
+              preload
+              sizes="(min-width: 768px) 48rem, 100vw"
+              className="object-cover"
+            />
+          </div>
+          {project.cover.credit && (
+            <figcaption className="mt-3 text-muted-foreground text-xs">
+              Photo: {project.cover.credit}
+            </figcaption>
+          )}
+        </figure>
+      )}
     </>
   );
 }

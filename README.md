@@ -132,7 +132,7 @@ topic lives in one folder.
     │       └── components/        # Contact form (later)
     │
     ├── components/                # SHARED UI, used by any feature
-    │   ├── ui/                    # Primitives: Button, Badge, Prose (article typography), Skeleton
+    │   ├── ui/                    # Primitives: Button, Badge, Carousel, Prose (article typography), Skeleton
     │   ├── layout/                # Site chrome: SiteHeader, SiteFooter, AnnouncementBar, Section, StatStrip, ThemeToggle/Switcher
     │   ├── motion/                # Animation components: Reveal, TextReveal, Parallax, RibbonCanvas
     │   ├── seo/                   # JsonLd
@@ -156,7 +156,9 @@ topic lives in one folder.
 Every feature follows the same three-part pattern: **`components/`** (what it looks like),
 **`data.ts`** (what it says) and **`types.ts`** (the shape of that content). For example, to add a
 project you only edit `features/projects/data.ts`. The project then appears on `/projects` and in
-the sitemap, and gets its own page and preview image.
+the sitemap, and gets its own page and preview image. Optional fields shape its card in the home
+carousel: `cover` (a screenshot in `/public/projects/` or a remote image whose host is in
+`images.remotePatterns`), `accent` (panel colour) and `highlights` (two big numbers).
 
 Empty folders hold a `.gitkeep` so they show up in Git. Delete it once the folder has real files.
 
@@ -450,6 +452,7 @@ What we take from Mintlify, and where it lives:
 | Animated twisted-ribbon line art | `components/motion/ribbon-canvas.tsx`, in brand colours via `brand-ribbon.tsx` |
 | Mono stat chips in a strip | `components/layout/stat-strip.tsx` |
 | Bento cards with small UI illustrations | `features/about/components/capabilities.tsx`, `project-preview.tsx` |
+| Customer-story carousel: wide coloured cards with a photo in their own edge-to-edge band (hairlines above and below, no rails), arrows in the section header, previous and next cards visible at the sides and faded by scroll position (`carousel-dim`) | `components/ui/carousel.tsx`, `<Section bleed>`, `features/projects/components/project-showcase.tsx`, `project-story.tsx` |
 | Crisp corners: `rounded-md` buttons and chips, `rounded-xl` cards | `components/ui/button.tsx`, `badge.tsx` |
 | Faint patterns behind decoration | `bg-grid`, `bg-dots` utilities in `globals.css`, faded with `mask-*` |
 
