@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/motion/reveal";
 import { ProjectCard } from "@/features/projects/components/project-card";
 import type { Project } from "@/features/projects/types";
 
@@ -7,10 +8,10 @@ export function ProjectList({ projects }: { projects: Project[] }) {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <Reveal className="grid gap-4 md:grid-cols-2">
       {projects.map((project) => (
         <ProjectCard key={project.slug} project={project} />
       ))}
-    </div>
+    </Reveal>
   );
 }
