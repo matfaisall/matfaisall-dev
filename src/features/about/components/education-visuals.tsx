@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { CursorTag } from "@/features/about/components/cursor-tag";
+import { CursorTag } from "@/components/ui/cursor-tag";
 import type { Education } from "@/features/about/types";
 import { cn } from "@/lib/utils";
 

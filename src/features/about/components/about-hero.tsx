@@ -1,10 +1,10 @@
 import { EnvelopeSimpleIcon, GithubLogoIcon, LinkedinLogoIcon } from "@phosphor-icons/react/ssr";
 import Image from "next/image";
-import { Fragment, type ReactNode } from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { TextReveal } from "@/components/motion/text-reveal";
 import { Button } from "@/components/ui/button";
-import { CursorTag } from "@/features/about/components/cursor-tag";
+import { CursorTag } from "@/components/ui/cursor-tag";
+import { Marked } from "@/components/ui/marked";
 import { LiveDot } from "@/features/about/components/live-dot";
 import type { About } from "@/features/about/types";
 
@@ -23,14 +23,6 @@ type AboutHeroProps = {
   linkedinUrl: string;
   email: string;
 };
-
-/** Splits "… that *feel simple.*" on the asterisks and wraps every starred part with `mark`. */
-function Marked({ text, mark }: { text: string; mark: (part: string) => ReactNode }) {
-  return text.split("*").map((part, index) => (
-    // biome-ignore lint/suspicious/noArrayIndexKey: the parts of one fixed string never reorder.
-    <Fragment key={index}>{index % 2 === 1 ? mark(part) : part}</Fragment>
-  ));
-}
 
 /**
  * The portrait as a small photo card: a second card fanned out behind it, the location pinned to
