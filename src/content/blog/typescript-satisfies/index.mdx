@@ -1,0 +1,70 @@
+export const metadata = {
+  title: "TypeScript's satisfies, and when to reach for it",
+  summary:
+    "Check a value against a type without losing what TypeScript knows about it: the difference between annotating and satisfying.",
+  publishedAt: "2026-10-02",
+  category: "languages",
+  tags: ["TypeScript"],
+};
+
+{/* TODO: example post. Make it yours, or delete this folder and its line in features/blog/posts.ts. */}
+
+`satisfies` has been in TypeScript since 4.9, and it solves a problem you've probably hit without
+naming it: you want a value checked against a type, but you don't want the type to replace what
+TypeScript already knows about the value.
+
+## The problem with annotations
+
+Annotating a variable checks it, then _widens_ it to the annotation.
+
+```ts
+type Route = { path: string; label: string };
+
+const nav: Record<string, Route> = {
+  home: { path: "/", label: "Home" },
+  blog: { path: "/blog", label: "Blog" },
+};
+
+nav.blog.path; // fine
+nav.contact.path; // also "fine": compiles, then crashes at runtime
+```
+
+Because the type is now `Record<string, Route>`, TypeScript has forgotten which keys exist.
+
+## satisfies checks without widening
+
+```ts {4}
+const nav = {
+  home: { path: "/", label: "Home" },
+  blog: { path: "/blog", label: "Blog" },
+} satisfies Record<string, Route>;
+
+nav.contact.path; // error: Property 'contact' does not exist
+```
+
+The value is still checked: a missing `label` or a typo in a key is an error. But the inferred type
+is kept, so `nav` knows exactly which keys it has.
+
+## Pair it with as const
+
+Add `as const` and the values keep their literal types too:
+
+```ts
+const theme = {
+  accent: "amber",
+  radius: 8,
+} as const satisfies Record<string, string | number>;
+
+type Accent = typeof theme.accent; // "amber", not string
+```
+
+<Callout title="Rule of thumb">
+  Annotate when you want the variable to _be_ that type from now on, like a function parameter or
+  something you'll reassign. Use `satisfies` for configuration objects you only want validated.
+</Callout>
+
+## Where I use it
+
+- Config objects: navigation, design tokens, feature flags.
+- Lookup tables keyed by a union, so a missing key is a compile error.
+- Storybook stories: `satisfies Meta<typeof Button>` keeps the args typed.

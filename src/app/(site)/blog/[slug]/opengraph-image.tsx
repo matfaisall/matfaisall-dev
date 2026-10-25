@@ -1,3 +1,4 @@
+import { getCategory } from "@/features/blog/categories";
 import { getPostBySlug, getPosts } from "@/features/blog/data";
 import { ogImageContentType, ogImageSize, renderOgImage } from "@/lib/og-image";
 
@@ -18,7 +19,7 @@ export default async function BlogPostOpenGraphImage({
   const post = getPostBySlug(slug);
 
   return renderOgImage({
-    eyebrow: "Blog",
+    eyebrow: post ? `Blog · ${getCategory(post.category)?.label}` : "Blog",
     title: post?.title ?? "Blog",
     description: post?.summary,
   });

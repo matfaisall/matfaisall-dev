@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { categories } from "@/features/blog/categories";
 import { getPosts } from "@/features/blog/data";
 import { getProjects } from "@/features/projects/data";
 import { absoluteUrl } from "@/lib/seo";
@@ -18,6 +19,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
+  const blogCategories: MetadataRoute.Sitemap = categories.map((category) => ({
+    url: absoluteUrl(`/blog/category/${category.slug}`),
+    changeFrequency: "weekly",
+    priority: 0.5,
+  }));
+
   const posts: MetadataRoute.Sitemap = getPosts().map((post) => ({
     url: absoluteUrl(`/blog/${post.slug}`),
     lastModified: post.updatedAt ?? post.publishedAt,
@@ -25,5 +32,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...pages, ...projects, ...posts];
+  return [...pages, ...projects, ...blogCategories, ...posts];
 }

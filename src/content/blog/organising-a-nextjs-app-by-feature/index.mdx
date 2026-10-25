@@ -1,0 +1,82 @@
+import cover from "./cover.webp";
+import importRules from "./import-rules.webp";
+
+export const metadata = {
+  title: "Organising a Next.js app by feature",
+  summary:
+    "One folder per topic, shared code that knows nothing about features, and a linter that keeps it that way.",
+  publishedAt: "2026-10-24",
+  category: "architecture",
+  tags: ["Next.js", "Folder structure", "dependency-cruiser"],
+  cover,
+  coverAlt: "A folder tree of src/ with app, features (about, blog, projects), components, lib and config.",
+};
+
+{/* TODO: example post. Make it yours, or delete this folder and its line in features/blog/posts.ts. */}
+
+Most Next.js projects start with folders named after what files _are_: `components/`, `hooks/`,
+`utils/`. That works until the app grows and every change touches five folders. This site is
+organised by what files are _about_ instead.
+
+## One topic, one folder
+
+Everything that belongs to a topic lives in `src/features/<topic>/`: its components, its data, its
+types and its stories. The routes in `src/app/` stay thin. They import from features and arrange
+the result on the page.
+
+```text
+src/
+├── app/                # Routes: compose features, no business logic
+├── features/
+│   ├── about/          # components/, data.ts, types.ts
+│   ├── blog/
+│   └── projects/
+├── components/         # Shared UI: Button, Section, motion
+├── lib/                # Shared helpers: dates, SEO, GSAP setup
+└── config/             # Site-wide settings
+```
+
+When I work on the blog, I open one folder. When I delete a feature, I delete one folder.
+
+## The two rules
+
+Folders only help if the boundaries hold. Two rules keep them honest:
+
+1. **Features never import each other.** If two features need the same thing, it moves to shared
+   code.
+2. **Shared code never imports a feature.** `components/` and `lib/` stay generic, so anything can
+   use them.
+
+<Figure
+  src={importRules}
+  alt="Routes in app import from three features; features import from shared code; features don't import each other."
+  caption="Imports flow downwards: routes, then features, then shared code."
+/>
+
+## Enforce them with a linter
+
+Rules in a README are suggestions. Rules in CI are rules. [dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
+checks every import against a list of forbidden ones:
+
+```js title=".dependency-cruiser.cjs"
+{
+  name: "no-cross-feature-imports",
+  severity: "error",
+  from: { path: "^src/features/([^/]+)/" },
+  to: { path: "^src/features/", pathNot: "^src/features/$1/" },
+}
+```
+
+The `$1` refers back to the feature in `from`, so a feature can import its own files but not a
+sibling's. It runs on every commit, so a wrong import never reaches the main branch.
+
+<Callout type="tip" title="Where does a shared thing go?">
+  If it's UI, `components/`. If it's a function, `lib/`. If it's a setting, `config/`. If it only
+  makes sense for one topic, it isn't shared yet: keep it in the feature.
+</Callout>
+
+## When it pays off
+
+Small apps don't need this. It starts paying off when there are a few distinct topics, more than
+one person, or a codebase you'll come back to after months away. You'll know where things live
+without searching.

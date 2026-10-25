@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "Scroll animations with GSAP that respect reduced motion",
+  summary:
+    "Reveal content as it scrolls in, without a flash before hydration and without forcing motion on people who turned it off.",
+  publishedAt: "2026-08-21",
+  category: "frontend",
+  tags: ["GSAP", "Animation", "Accessibility"],
+};
+
+{/* TODO: example post. Make it yours, or delete this folder and its line in features/blog/posts.ts. */}
+
+Scroll animations make a page feel alive. Done carelessly, they also make content flash in late,
+fight the browser's layout and make some people feel ill. Here's the setup this site uses, built on
+[GSAP](https://gsap.com) and its React hook.
+
+## Animate only with full motion
+
+`gsap.matchMedia()` runs a block only while a media query matches, and reverts everything it created
+when it stops matching. Wrap every animation in it:
+
+```ts title="lib/gsap.ts"
+export const FULL_MOTION = "(prefers-reduced-motion: no-preference)";
+```
+
+```tsx {4-5}
+useGSAP(
+  () => {
+    const el = ref.current;
+    gsap.matchMedia().add(FULL_MOTION, () => {
+      gsap.from(el.children, { autoAlpha: 0, y: 40, stagger: 0.1 });
+    });
+  },
+  { scope: ref },
+);
+```
+
+Someone with reduced motion turned on gets the finished page straight away. Nothing to opt out of.
+
+## No flash before hydration
+
+The server sends the content visible. The animation hides it in the browser, after a moment
+where it was already on screen: a flash. The fix is to hide it in CSS, but only for people who will
+see the animation:
+
+```css
+@media (prefers-reduced-motion: no-preference) {
+  [data-animate] {
+    visibility: hidden;
+  }
+}
+```
+
+Then the animation reveals it with `autoAlpha`, which sets `visibility` and `opacity` together.
+
+<Callout type="warning" title="Don't forget no-JS">
+  If JavaScript never loads, the content stays hidden. A `<noscript>` style that sets
+  `[data-animate]` back to visible covers that case.
+</Callout>
+
+## Trigger once, on entry
+
+```ts
+scrollTrigger: { trigger: el, start: "top 85%", once: true }
+```
+
+`once: true` plays the animation the first time the element scrolls in and then removes the
+trigger, so scrolling back up doesn't replay it or cost anything.
+
+## Wrap it in a component
+
+All of this lives in one `<Reveal>` component, so a page only writes:
+
+```tsx
+<Reveal className="grid gap-4 md:grid-cols-3">
+  <Card />
+  <Card />
+  <Card />
+</Reveal>
+```
+
+Server Components can use it too: only `<Reveal>` itself is a Client Component, and the cards inside
+it still render on the server.

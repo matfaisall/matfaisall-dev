@@ -19,6 +19,8 @@ export const siteConfig = {
   ],
   locale: "en_US",
   location: "Indonesia",
+  // A square photo of your face, shown as the author on blog posts.
+  avatar: "/avatar.webp",
   email: "muh.faisal572@gmail.com",
   socials: {
     github: "https://github.com/matfaisall",

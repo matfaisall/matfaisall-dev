@@ -1,0 +1,75 @@
+export const metadata = {
+  title: "React Server Components, without the jargon",
+  summary:
+    "What runs where, why 'use client' is a boundary rather than a label, and the one pattern that makes it click.",
+  publishedAt: "2026-10-16",
+  category: "frontend",
+  tags: ["React", "Next.js", "Performance"],
+};
+
+{/* TODO: example post. Make it yours, or delete this folder and its line in features/blog/posts.ts. */}
+
+Server Components sound complicated because of the vocabulary around them. The idea underneath is
+small: some components only need to run once, on the server, and never ship to the browser.
+
+## Two kinds of components
+
+In the App Router every component is a **Server Component** unless you say otherwise. It renders on
+the server, can read files or query a database directly, and sends only the resulting HTML to the
+browser. Its code never reaches the user.
+
+A **Client Component** is what React components always were: it ships as JavaScript, hydrates in the
+browser and can use state, effects and event handlers.
+
+```tsx title="app/posts/page.tsx"
+// A Server Component: no "use client", so it can be async and read data directly.
+export default async function PostsPage() {
+  const posts = await getPosts();
+  return <PostList posts={posts} />;
+}
+```
+
+## "use client" is a boundary
+
+The directive doesn't mark one component as client-side. It marks the point where the tree crosses
+over: that file and everything it imports become part of the client bundle.
+
+```tsx title="components/like-button.tsx" {1,6}
+"use client";
+
+import { useState } from "react";
+
+export function LikeButton() {
+  const [liked, setLiked] = useState(false);
+  return <button onClick={() => setLiked(!liked)}>{liked ? "Liked" : "Like"}</button>;
+}
+```
+
+<Callout type="warning" title="Push the boundary down">
+  Putting `"use client"` at the top of a page turns the whole page into client code. Keep it on the
+  small interactive leaves, like this button.
+</Callout>
+
+## The pattern that makes it click
+
+A Client Component can't import a Server Component, but it can _receive_ one as `children`. The
+server renders the child; the client component only decides where it goes.
+
+```tsx
+<Tabs>
+  {/* Rendered on the server, passed through the client component untouched */}
+  <PostList posts={posts} />
+</Tabs>
+```
+
+This is how an interactive shell, like tabs, a carousel or a modal, can wrap content that never
+ships its own JavaScript.
+
+## What you get
+
+- Less JavaScript in the browser, because most of the page never hydrates.
+- Data fetching next to the component that needs it, without an API route in between.
+- Secrets that stay on the server, because the code that uses them never leaves it.
+
+Start with everything on the server, and reach for `"use client"` only when a component needs the
+browser.

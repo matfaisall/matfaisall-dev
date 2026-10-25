@@ -1,0 +1,81 @@
+export const metadata = {
+  title: "Designing API errors your frontend can actually use",
+  summary:
+    "A consistent error shape, the right status codes and field-level details turn 'Something went wrong' into a message people can act on.",
+  publishedAt: "2026-09-18",
+  category: "backend",
+  tags: ["API design", "HTTP", "TypeScript"],
+};
+
+{/* TODO: example post. Make it yours, or delete this folder and its line in features/blog/posts.ts. */}
+
+Most APIs put a lot of thought into the happy path and very little into errors. Then the frontend
+gets a `500` with an HTML page, or a `200` with `{ "success": false }`, and the user sees "Something
+went wrong". Errors are part of the API. Design them.
+
+## One shape for every error
+
+Pick a single shape and use it everywhere. [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457)
+("Problem Details") is a good default because it's a standard, so other tools already understand it:
+
+```json title="422 Unprocessable Content"
+{
+  "type": "https://api.example.com/errors/validation",
+  "title": "Some fields are invalid",
+  "status": 422,
+  "errors": [
+    { "field": "email", "message": "Enter a valid email address" },
+    { "field": "amount", "message": "Must be at least 100" }
+  ]
+}
+```
+
+`type` is a stable identifier the frontend can switch on. `title` is for humans. Anything else, like
+the `errors` list here, is an extension for that kind of problem.
+
+## Status codes that mean something
+
+| Status | Use it when                                       | The frontend should      |
+| ------ | ------------------------------------------------- | ------------------------ |
+| 400    | The request is malformed                          | Log it: it's a bug       |
+| 401    | Nobody is signed in                               | Send them to sign in     |
+| 403    | Signed in, but not allowed                        | Explain, don't retry     |
+| 404    | The thing doesn't exist                           | Show a not-found state   |
+| 409    | It conflicts with the current state               | Refresh and let them retry |
+| 422    | Valid request, invalid values                     | Show the field errors    |
+| 429    | Too many requests                                 | Wait, then retry         |
+| 5xx    | The server failed                                 | Retry, then apologise    |
+
+## Typing it on the frontend
+
+With one shape, the client needs one parser, and the compiler helps with the rest:
+
+```ts title="lib/api-error.ts"
+type ApiError =
+  | { type: "validation"; errors: { field: string; message: string }[] }
+  | { type: "unauthorized" }
+  | { type: "unknown"; title: string };
+
+function messageFor(error: ApiError): string {
+  switch (error.type) {
+    case "validation":
+      return "Check the highlighted fields.";
+    case "unauthorized":
+      return "Your session ended. Sign in again.";
+    case "unknown":
+      return error.title;
+  }
+}
+```
+
+<Callout type="tip" title="Field errors belong next to the field">
+  Map each `errors[].field` to its input and show the message right there. A list at the top of the
+  form makes people hunt for what to fix.
+</Callout>
+
+## Checklist
+
+- Every error response uses the same JSON shape, including 404s and 500s.
+- Status codes say what happened; `type` says which kind of problem it is.
+- Messages are written for the person using the app, not the developer.
+- Nothing sensitive leaks: no stack traces or SQL in production responses.

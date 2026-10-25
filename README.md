@@ -37,7 +37,7 @@ Tailwind CSS and GSAP.
 | Typography    | [Inter](https://rsms.me/inter/) (primary) + JetBrains Mono + Instrument Serif (display), self-hosted via `next/font` |
 | Components    | [Storybook 10](https://storybook.js.org) (Next.js + Vite), with docs, a11y and themes addons |
 | Code quality  | [Biome](https://biomejs.dev) (lint + format), Husky, lint-staged, commitlint          |
-| Content       | MDX blog posts via `@next/mdx` + `remark-gfm`, styled with `@tailwindcss/typography` |
+| Content       | MDX blog posts via `@next/mdx` + `remark-gfm`, code highlighted by `rehype-pretty-code` (Shiki), styled with `@tailwindcss/typography` |
 | SEO           | Next.js Metadata API, generated Open Graph images, JSON-LD (`schema-dts`), sitemap, robots |
 | Architecture  | Feature-based folders, import rules enforced by [dependency-cruiser](https://github.com/sverweij/dependency-cruiser) |
 
@@ -106,13 +106,15 @@ topic lives in one folder.
     │       │       ├── page.tsx              # /projects/<slug>
     │       │       └── opengraph-image.tsx   # Social preview per project
     │       └── blog/
-    │           ├── page.tsx       # /blog
+    │           ├── page.tsx       # /blog: featured post, category tabs, grid
+    │           ├── category/[category]/page.tsx   # /blog/category/<slug>
+    │           ├── rss.xml/route.ts              # /blog/rss.xml
     │           └── [slug]/
     │               ├── page.tsx              # /blog/<slug>
     │               └── opengraph-image.tsx   # Social preview per post
     │
     ├── content/
-    │   └── blog/                  # BLOG POSTS: one .mdx file per post (hello-world.mdx)
+    │   └── blog/                  # BLOG POSTS: one folder per post, <slug>/index.mdx + its images
     │
     ├── features/                  # ONE FOLDER PER TOPIC
     │   ├── about/                 # Who you are
@@ -124,10 +126,11 @@ topic lives in one folder.
     │   │   ├── data.ts            # Your projects + getProjects(), getProjectBySlug()
     │   │   └── types.ts           # Project
     │   ├── blog/
-    │   │   ├── components/        # post-card.tsx, post-list.tsx, post-header.tsx (+ stories)
+    │   │   ├── components/        # featured-post, post-tile, category-tabs, post-header, table-of-contents … (+ stories)
+    │   │   ├── categories.ts      # The six categories and their tabs
     │   │   ├── posts.ts           # Registry: one import per post in src/content/blog
-    │   │   ├── data.ts            # getPosts(), getPostBySlug(), getPostContent()
-    │   │   └── types.ts           # Post, PostMetadata
+    │   │   ├── data.ts            # getPosts(), getFeaturedPost(), getPostsByCategory() …
+    │   │   └── types.ts           # Post, PostMetadata, Author
     │   └── contact/
     │       └── components/        # Contact form (later)
     │
@@ -141,7 +144,8 @@ topic lives in one folder.
     ├── lib/                       # SHARED SETUP & HELPERS
     │   ├── gsap.ts                # GSAP plugins + motion tokens
     │   ├── seo.ts                 # createPageMetadata(), absoluteUrl(), JSON-LD helpers
-    │   ├── date.ts                # formatDate()
+    │   ├── date.ts                # formatDate(), formatMonth(), formatSpan()
+    │   ├── mdx/remark-post-meta.mjs   # Heading ids, reading time and table of contents for posts
     │   ├── og-image.tsx           # Shared template for social preview images
     │   ├── fonts.ts               # Inter + JetBrains Mono + Instrument Serif
     │   └── utils.ts               # cn()
@@ -149,6 +153,7 @@ topic lives in one folder.
     ├── config/site.ts             # Name, role, domain, links, nav: used by SEO and UI
     ├── hooks/                     # Hooks shared by several features
     ├── types/                     # Shared types (mdx.d.ts)
+    ├── components/mdx/            # <Callout> and <Figure>, usable in every post without an import
     ├── mdx-components.tsx         # How Markdown elements render in MDX (required by @next/mdx)
     └── stories/                   # Docs-only Storybook pages (Foundations/Colors)
 ```
@@ -265,35 +270,80 @@ preview image. Add an `opengraph-image.tsx` next to `page.tsx` only if it needs 
 
 ### Writing a blog post
 
-1. Create `src/content/blog/<slug>.mdx`. The file name becomes the URL: `/blog/<slug>`.
-2. Start it with the metadata:
+Every post is a folder in `src/content/blog/`. The folder name is the URL: `/blog/<slug>`.
 
-   ```mdx
+```
+src/content/blog/
+└── animating-with-gsap/
+    ├── index.mdx      ← the post
+    ├── cover.webp     ← optional, 16:9
+    └── timeline.webp  ← images used in the post
+```
+
+1. Create the folder and `index.mdx`, starting with the metadata:
+
+   ````mdx
+   import cover from "./cover.webp";
+   import timeline from "./timeline.webp";
+
    export const metadata = {
      title: "Animating with GSAP in Next.js",
      summary: "One sentence that shows up on the card and in Google.",
      publishedAt: "2026-11-01",
+     category: "frontend",
      tags: ["GSAP", "Next.js"],
+     cover,
+     coverAlt: "What the cover shows",
    };
 
    Your post, in **Markdown**. Tables, task lists and footnotes (GFM) work too.
-   ```
 
-3. Register it in `src/features/blog/posts.ts`:
+   ## A section
+
+   <Figure src={timeline} alt="What the image shows" caption="Shown under the image" />
+
+   <Callout type="tip" title="Good to know">Asides in **Markdown**: note, tip or warning.</Callout>
+
+   ```ts title="lib/gsap.ts" {2}
+   // Code blocks are highlighted at build time; `title` adds a file name, {2} highlights line 2.
+   gsap.registerPlugin(ScrollTrigger);
+   ```
+   ````
+
+2. Register it in `src/features/blog/posts.ts`:
 
    ```ts
-   import * as animatingWithGsap from "@/content/blog/animating-with-gsap.mdx";
+   import * as animatingWithGsap from "@/content/blog/animating-with-gsap/index.mdx";
 
    export const postFiles = {
-     "hello-world": helloWorld,
+     // …the other posts
      "animating-with-gsap": animatingWithGsap,
    };
    ```
 
-That's it. The post appears on `/blog` and in the sitemap (with its date), and gets its own page,
-`BlogPosting` structured data and a preview image. If the metadata is missing a field or a date is
-malformed, the build fails and names the file. Add `draft: true` to keep a post out of production
-while you write it.
+| Field         | Required | What it does |
+| ------------- | -------- | ------------ |
+| `title`       | yes      | The heading, the card and the browser tab |
+| `summary`     | yes      | One sentence for the card and the SEO description |
+| `publishedAt` | yes      | `"YYYY-MM-DD"`. Posts are sorted by it, newest first |
+| `category`    | yes      | One of `frontend`, `backend`, `architecture`, `languages`, `tooling`, `notes` (edit them in `features/blog/categories.ts`) |
+| `tags`        | yes      | Finer topics, shown at the end of the post |
+| `cover`       | no       | An imported image. Without one, the post gets an illustrated cover for its category |
+| `coverAlt`    | with `cover` | Describes the cover for screen readers |
+| `featured`    | no       | `true` pins the post to the big card at the top of `/blog` |
+| `updatedAt`   | no       | `"YYYY-MM-DD"` after a meaningful edit |
+| `draft`       | no       | `true` keeps the post out of production while you write it |
+
+The reading time, the heading ids and the "On this page" list are worked out from the text at
+build time. If the metadata is missing a field, a category is misspelled or a date is malformed,
+the build fails and names the file.
+
+**What happens when you publish.** Your newest post (by `publishedAt`) automatically:
+
+- takes the big card at the top of `/blog`, unless another post has `featured: true`;
+- appears in the "New post" bar at the top of every page;
+- joins its category page, the sitemap and the RSS feed at `/blog/rss.xml`, with its own page,
+  `BlogPosting` structured data and a social preview image.
 
 ### Where does my code go?
 
@@ -301,7 +351,7 @@ while you write it.
 | --- | --- |
 | A page / URL | `src/app/(site)/<route>/page.tsx` (see [Adding a new route](#adding-a-new-route)) |
 | Content (projects, bio, experience) | `src/features/<topic>/data.ts` |
-| A blog post | `src/content/blog/<slug>.mdx` + one line in `features/blog/posts.ts` |
+| A blog post | `src/content/blog/<slug>/index.mdx` + one line in `features/blog/posts.ts` |
 | A section or component for one topic | `src/features/<topic>/components/` |
 | A new topic (e.g. blog) | `src/features/<topic>/` with `components/`, `data.ts`, `types.ts` |
 | A generic UI primitive (Input, Card…) | `src/components/ui/` + a `*.stories.tsx` |
@@ -632,10 +682,10 @@ and a social preview checker such as [opengraph.xyz](https://www.opengraph.xyz/)
 - [x] Tooling: Biome, Husky, lint-staged, commitlint
 - [x] Storybook with amber design tokens
 - [x] Layout (header, footer, navigation) inspired by Mintlify
-- [x] Routes: `/about`, `/projects`, `/projects/<slug>`, `/blog`, `/blog/<slug>` (unstyled)
-- [x] MDX blog with typed, validated metadata
+- [x] Routes: `/about`, `/projects`, `/projects/<slug>`, `/blog`, `/blog/<slug>`, `/blog/category/<slug>`
+- [x] MDX blog with typed, validated metadata, categories and a Mintlify-style layout
 - [ ] Sections: hero, about, projects, experience, contact (home page done; experience pending)
-- [ ] RSS feed for the blog
+- [x] RSS feed for the blog
 - [ ] Real content in `config/site.ts` and feature data files
 - [x] SEO: metadata, Open Graph images, JSON-LD, sitemap, robots, manifest
 - [x] Motion components (Reveal, TextReveal, Parallax) and motion tokens

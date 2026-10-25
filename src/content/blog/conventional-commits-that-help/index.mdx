@@ -1,0 +1,70 @@
+export const metadata = {
+  title: "Conventional commits that actually help",
+  summary:
+    "A commit history you can read like a changelog, checked on every commit with Husky and commitlint.",
+  publishedAt: "2026-09-04",
+  category: "tooling",
+  tags: ["Git", "Husky", "commitlint"],
+};
+
+{/* TODO: example post. Make it yours, or delete this folder and its line in features/blog/posts.ts. */}
+
+`fix stuff`, `wip`, `final final v2`. We've all written them. Six months later they tell you nothing.
+Conventional Commits is a tiny format that makes every commit say what kind of change it is.
+
+## The format
+
+```text
+type(scope): what changed, in the imperative
+
+Why it changed, if that isn't obvious. Wrap lines at 100 characters.
+```
+
+The types you'll use most:
+
+- `feat`: something new for the user.
+- `fix`: a bug fix.
+- `refactor`: the code changed, the behaviour didn't.
+- `docs`, `style`, `test`, `build`, `ci`, `chore`: everything around the code.
+
+The scope is optional and names the area: `feat(blog): add category tabs`.
+
+## Why bother
+
+A history like this reads like release notes:
+
+```text
+feat(blog): add category tabs and an RSS feed
+fix(about): keep the portrait card from stretching
+refactor(motion): animate the comet with GSAP
+```
+
+You can see what changed without opening a single diff, generate a changelog from it, and spot a
+`feat` hiding in a commit that was supposed to be a `fix`.
+
+## Make the machine check it
+
+Nobody remembers a format under pressure, so let a hook do it. [commitlint](https://commitlint.js.org)
+checks the message, and [Husky](https://typicode.github.io/husky) runs it before every commit:
+
+```js title="commitlint.config.mjs"
+export default { extends: ["@commitlint/config-conventional"] };
+```
+
+```sh title=".husky/commit-msg"
+pnpm exec commitlint --edit "$1"
+```
+
+A message that doesn't follow the format is rejected with a reason, like a body line that's too
+long, and you fix it before it lands.
+
+<Callout type="note" title="Pair it with lint-staged">
+  A `pre-commit` hook running [lint-staged](https://github.com/lint-staged/lint-staged) formats and
+  lints only the files you're committing, so every commit is both well described and well
+  formatted.
+</Callout>
+
+## Small commits, clear messages
+
+The format works best when each commit does one thing. If the message needs "and", it's probably two
+commits.

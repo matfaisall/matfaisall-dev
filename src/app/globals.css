@@ -213,6 +213,41 @@
 }
 
 /*
+ * Code blocks in blog posts, highlighted at build time by rehype-pretty-code. Every token carries
+ * a light and a dark colour (--shiki-light, --shiki-dark); the theme picks one. Add a file name
+ * with ```ts title="lib/utils.ts" and highlight lines with ```ts {2-3}.
+ */
+[data-rehype-pretty-code-figure] {
+  @apply my-8 overflow-hidden rounded-lg border border-border bg-muted/30;
+}
+
+[data-rehype-pretty-code-figure] pre {
+  @apply m-0 overflow-x-auto rounded-none bg-transparent px-0 py-4 text-[0.8125rem] leading-6;
+}
+
+[data-rehype-pretty-code-figure] [data-line] {
+  @apply border-transparent border-l-2 px-5;
+}
+
+[data-rehype-pretty-code-figure] [data-highlighted-line] {
+  @apply border-primary bg-primary/10;
+}
+
+[data-rehype-pretty-code-title] {
+  @apply border-border border-b px-5 py-2 font-mono text-muted-foreground text-xs;
+}
+
+[data-rehype-pretty-code-figure] pre,
+[data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-light);
+}
+
+.dark [data-rehype-pretty-code-figure] pre,
+.dark [data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-dark);
+}
+
+/*
  * 3. Motion. Elements animated in by GSAP start hidden so they never flash before hydration;
  * GSAP reveals them with `autoAlpha`. Reduced-motion users and no-JS visitors (see the <noscript>
  * style in the root layout) always see the content.
