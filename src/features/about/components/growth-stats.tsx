@@ -58,6 +58,15 @@ const dotMatrix: CSSProperties = {
 const FIRST_MILESTONE = 0.36;
 const LAST_MILESTONE = 0.92;
 
+/**
+ * Where a milestone's label sits around its node. Labels alternate above and below the line so
+ * neighbours don't collide; the last one sits up and to the left, so it never runs off the edge.
+ */
+function labelPosition(index: number, isLast: boolean) {
+  if (isLast) return "right-3 bottom-3";
+  return cn("left-0 -translate-x-1/2", index % 2 === 0 ? "bottom-3.5" : "top-3.5");
+}
+
 function GrowthChart({ milestones }: { milestones: Milestone[] }) {
   const step =
     milestones.length > 1 ? (LAST_MILESTONE - FIRST_MILESTONE) / (milestones.length - 1) : 0;
@@ -127,13 +136,10 @@ function GrowthChart({ milestones }: { milestones: Milestone[] }) {
               {isLast && (
                 <span className="-translate-1/2 absolute size-3 animate-ping rounded-full bg-primary/60 motion-reduce:hidden" />
               )}
-              {/* Labels alternate above and below the line; the last one sits up and to the left
-                  of its node, so it never runs off the right edge. */}
               <span
                 className={cn(
                   "absolute hidden items-center gap-1.5 whitespace-nowrap rounded-md border border-border bg-background px-2 py-1 text-xs shadow-sm lg:flex",
-                  isLast ? "right-3 bottom-3" : "left-0 -translate-x-1/2",
-                  !isLast && (index % 2 === 0 ? "bottom-3.5" : "top-3.5"),
+                  labelPosition(index, isLast),
                 )}
               >
                 <time dateTime={milestone.date} className="font-mono text-primary">

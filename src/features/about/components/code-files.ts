@@ -1,5 +1,5 @@
 // Files shown in the hero's code window. A file is a list of lines and a line a list of
-// syntax-coloured tokens, so the window can type them out one character at a time.
+// syntax-coloured tokens, each drawn in its own colour.
 
 export type TokenKind =
   | "keyword"
@@ -9,7 +9,7 @@ export type TokenKind =
   | "punctuation"
   | "comment"
   | "plain";
-export type Token = { text: string; kind: TokenKind };
+type Token = { text: string; kind: TokenKind };
 export type Line = Token[];
 export type CodeFile = { name: string; lines: Line[] };
 

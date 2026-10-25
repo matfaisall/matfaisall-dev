@@ -20,9 +20,18 @@ export const metadata = createPageMetadata({
 const twoDigits = (count: number) => String(count).padStart(2, "0");
 
 export default function AboutPage() {
-  const firstRole = about.experience.at(-1);
   const currentRole = about.experience.find((role) => !role.end);
+
+  // The growth band's numbers, worked out from the data so they never go stale. Experience is
+  // newest first, so the last role is where it started.
+  const startYear = about.experience.at(-1)?.start.slice(0, 4);
   const companies = new Set(about.experience.map((role) => role.company)).size;
+  const stats = [
+    ...(startYear ? [{ label: "Shipping to production since", value: startYear }] : []),
+    { label: "Companies I've shipped for", value: twoDigits(companies) },
+    ...about.impact,
+    { label: "Certificates earned along the way", value: twoDigits(about.certificates.length) },
+  ];
 
   return (
     <>
@@ -45,20 +54,7 @@ export default function AboutPage() {
         description="The road so far, in numbers."
         bleed
       >
-        <GrowthStats
-          stats={[
-            ...(firstRole
-              ? [{ label: "Shipping to production since", value: firstRole.start.slice(0, 4) }]
-              : []),
-            { label: "Companies I've shipped for", value: twoDigits(companies) },
-            ...about.impact,
-            {
-              label: "Certificates earned along the way",
-              value: twoDigits(about.certificates.length),
-            },
-          ]}
-          milestones={about.milestones}
-        />
+        <GrowthStats stats={stats} milestones={about.milestones} />
       </Section>
       <Section
         id="experience"

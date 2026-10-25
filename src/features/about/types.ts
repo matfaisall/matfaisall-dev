@@ -43,10 +43,6 @@ export type Quote = {
   author: string;
   /** Who the author is or where the line comes from, e.g. "Computer scientist". */
   source?: string;
-  /** The quote's language when it isn't English, e.g. "id", so screen readers pronounce it right. */
-  lang?: string;
-  /** An English translation, for a quote in another language. */
-  translation?: string;
 };
 
 /** A point on the growth curve on the About page, oldest first. */

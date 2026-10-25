@@ -1,14 +1,11 @@
-import {
-  CursorIcon,
-  EnvelopeSimpleIcon,
-  GithubLogoIcon,
-  LinkedinLogoIcon,
-} from "@phosphor-icons/react/ssr";
+import { EnvelopeSimpleIcon, GithubLogoIcon, LinkedinLogoIcon } from "@phosphor-icons/react/ssr";
 import Image from "next/image";
 import { Fragment, type ReactNode } from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { TextReveal } from "@/components/motion/text-reveal";
 import { Button } from "@/components/ui/button";
+import { CursorTag } from "@/features/about/components/cursor-tag";
+import { LiveDot } from "@/features/about/components/live-dot";
 import type { About } from "@/features/about/types";
 
 type AboutHeroProps = {
@@ -37,7 +34,7 @@ function Marked({ text, mark }: { text: string; mark: (part: string) => ReactNod
 
 /**
  * The portrait as a small photo card: a second card fanned out behind it, the location pinned to
- * the bottom edge and a Mintlify-style cursor tag with your first name.
+ * the bottom edge and a Mintlify-style cursor tag with the name you go by.
  */
 function PortraitCard({
   portrait,
@@ -74,15 +71,12 @@ function PortraitCard({
         <span aria-hidden="true" className="size-1.5 rounded-full bg-primary" />
         {location}
       </figcaption>
-      <span
-        aria-hidden="true"
-        className="absolute top-2/3 -right-5 flex items-start gap-0.5 md:-right-8"
-      >
-        <CursorIcon weight="fill" className="size-4 text-primary" />
-        <span className="mt-3 rounded-md bg-primary px-1.5 py-0.5 font-medium text-primary-foreground text-xs">
-          {name.split(" ").at(-1)}
-        </span>
-      </span>
+      {/* The last word of the full name: "Muhammad Faisal" → "Faisal". */}
+      <CursorTag
+        name={name.split(" ").at(-1) ?? name}
+        size="md"
+        className="top-2/3 -right-5 md:-right-8"
+      />
     </figure>
   );
 }
@@ -137,10 +131,7 @@ export function AboutHero({
           <div className="flex max-w-xl flex-col gap-8">
             {current && (
               <p className="inline-flex items-center gap-2.5 self-start rounded-lg border border-border bg-background py-1 pr-3 pl-2.5 text-xs sm:text-sm">
-                <span aria-hidden="true" className="relative flex size-2">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-60 motion-reduce:animate-none" />
-                  <span className="relative inline-flex size-2 rounded-full bg-primary" />
-                </span>
+                <LiveDot className="size-2" />
                 <span>
                   {current.role} at <span className="font-medium">{current.company}</span>
                 </span>

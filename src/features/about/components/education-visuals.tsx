@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { CursorTag } from "@/features/about/components/experience-visuals";
+import { CursorTag } from "@/features/about/components/cursor-tag";
 import type { Education } from "@/features/about/types";
 import { cn } from "@/lib/utils";
 
@@ -96,6 +96,19 @@ function ComponentsVisual() {
 }
 
 const stages = ["Empathize", "Define", "Ideate", "Prototype", "Test"];
+const CURRENT_STAGE = stages.indexOf("Prototype");
+
+const stageDot = {
+  done: "border-primary bg-primary",
+  current: "border-primary bg-background ring-3 ring-primary/20",
+  next: "border-border bg-background",
+};
+
+function stageState(index: number): keyof typeof stageDot {
+  if (index < CURRENT_STAGE) return "done";
+  if (index === CURRENT_STAGE) return "current";
+  return "next";
+}
 
 /** Design Thinking: the five stages on one line, prototyping in progress. */
 function ProcessVisual() {
@@ -116,26 +129,22 @@ function ProcessVisual() {
           <path d="M8 20 C40 4 72 36 104 20 S168 4 200 20" className="stroke-primary" />
         </svg>
         <ol className="relative flex justify-between">
-          {stages.map((stage, index) => (
-            <li key={stage} className="flex w-0 flex-col items-center gap-2 pt-3.75">
-              <span
-                className={cn(
-                  "size-2.5 shrink-0 rounded-full border-2",
-                  index < 3 && "border-primary bg-primary",
-                  index === 3 && "border-primary bg-background ring-3 ring-primary/20",
-                  index > 3 && "border-border bg-background",
-                )}
-              />
-              <span
-                className={cn(
-                  "font-mono text-[9px]",
-                  index <= 3 ? "text-foreground" : "text-muted-foreground",
-                )}
-              >
-                {stage}
-              </span>
-            </li>
-          ))}
+          {stages.map((stage, index) => {
+            const state = stageState(index);
+            return (
+              <li key={stage} className="flex w-0 flex-col items-center gap-2 pt-3.75">
+                <span className={cn("size-2.5 shrink-0 rounded-full border-2", stageDot[state])} />
+                <span
+                  className={cn(
+                    "font-mono text-[9px]",
+                    state === "next" ? "text-muted-foreground" : "text-foreground",
+                  )}
+                >
+                  {stage}
+                </span>
+              </li>
+            );
+          })}
         </ol>
         <div className="mx-auto mt-5 flex w-28 flex-col gap-1.5 rounded-md border border-border bg-background p-2 shadow-sm">
           <span className="h-1.5 w-1/2 rounded-full bg-muted" />

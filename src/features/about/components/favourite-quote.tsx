@@ -35,16 +35,13 @@ export function FavouriteQuote({ quote }: { quote: Quote }) {
 
       <Reveal className="mx-auto max-w-160">
         <figure className="flex flex-col gap-4 rounded-md border border-border bg-card p-6 shadow-2xl shadow-black/20 sm:p-8 lg:p-12">
-          <blockquote lang={quote.lang}>
+          <blockquote>
             <TextReveal
               as="p"
               className="text-balance font-display text-3xl/9 tracking-[-0.02em] md:text-4xl/10"
             >
               “{quote.text}”
             </TextReveal>
-            {quote.translation && (
-              <p className="mt-3 text-base/6 text-muted-foreground">{quote.translation}</p>
-            )}
           </blockquote>
           <figcaption className="flex items-center gap-2.5 text-muted-foreground text-sm/5">
             <span aria-hidden="true" className="h-px w-5 bg-primary" />

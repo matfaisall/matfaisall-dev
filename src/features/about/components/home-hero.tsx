@@ -18,7 +18,7 @@ type HomeHeroProps = {
   focus: string[];
   githubUrl: string;
   email: string;
-  /** Typed out in the code window's projects.ts. A few is plenty. */
+  /** Listed in the code window's projects.ts. A few is plenty. */
   projects: { title: string; year: number }[];
 };
 

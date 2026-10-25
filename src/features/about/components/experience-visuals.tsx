@@ -1,30 +1,14 @@
-import {
-  CheckIcon,
-  CursorIcon,
-  GitPullRequestIcon,
-  LightningIcon,
-} from "@phosphor-icons/react/ssr";
+import { CheckIcon, GitPullRequestIcon, LightningIcon } from "@phosphor-icons/react/ssr";
 import type { ComponentType } from "react";
+import { CursorTag } from "@/features/about/components/cursor-tag";
 import type { Experience } from "@/features/about/types";
 import { cn } from "@/lib/utils";
 
 const bar = "block rounded-full bg-muted";
 const panel = "rounded-lg border border-border bg-background/95 shadow-sm";
 
-/** A Mintlify-style cursor with a name tag, for showing someone at work in an illustration. */
-export function CursorTag({ name, className }: { name: string; className?: string }) {
-  return (
-    <span className={cn("absolute flex items-start gap-0.5", className)}>
-      <CursorIcon weight="fill" className="size-3.5 text-primary" />
-      <span className="mt-2.5 rounded-sm bg-primary px-1 py-0.5 font-medium text-[10px] text-primary-foreground leading-none">
-        {name}
-      </span>
-    </span>
-  );
-}
-
 /** Thin lines sweeping through an illustration behind its panels, one of them amber. */
-export function FlowLines({ className }: { className?: string }) {
+function FlowLines({ className }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
@@ -108,29 +92,33 @@ function ReviewVisual() {
           <span className="text-muted-foreground">−7</span>
         </div>
         <div className="flex flex-col py-1.5 font-mono text-[9px]">
-          {diff.map((line, index) => (
-            <span
-              // biome-ignore lint/suspicious/noArrayIndexKey: a fixed illustration that never reorders.
-              key={index}
-              className={cn(
-                "flex items-center gap-2 px-3 py-0.75",
-                line.sign === "+" && "bg-primary/10",
-                line.sign === "-" && "bg-muted/60",
-              )}
-            >
-              <span className="w-3 text-muted-foreground tabular-nums">{index + 12}</span>
-              <span className={line.sign === "+" ? "text-primary" : "text-muted-foreground"}>
-                {line.sign}
-              </span>
+          {diff.map((line, index) => {
+            const added = line.sign === "+";
+            const removed = line.sign === "-";
+            return (
               <span
+                // biome-ignore lint/suspicious/noArrayIndexKey: a fixed illustration that never reorders.
+                key={index}
                 className={cn(
-                  "h-1.5 rounded-full",
-                  line.width,
-                  line.sign === "+" ? "bg-primary/40" : "bg-muted",
+                  "flex items-center gap-2 px-3 py-0.75",
+                  added && "bg-primary/10",
+                  removed && "bg-muted/60",
                 )}
-              />
-            </span>
-          ))}
+              >
+                <span className="w-3 text-muted-foreground tabular-nums">{index + 12}</span>
+                <span className={added ? "text-primary" : "text-muted-foreground"}>
+                  {line.sign}
+                </span>
+                <span
+                  className={cn(
+                    "h-1.5 rounded-full",
+                    line.width,
+                    added ? "bg-primary/40" : "bg-muted",
+                  )}
+                />
+              </span>
+            );
+          })}
         </div>
       </div>
       <div
