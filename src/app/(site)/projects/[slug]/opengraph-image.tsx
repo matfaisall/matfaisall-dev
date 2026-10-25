@@ -1,4 +1,5 @@
 import { getProjectBySlug, getProjects } from "@/features/projects/data";
+import { industries } from "@/features/projects/industries";
 import { ogImageContentType, ogImageSize, renderOgImage } from "@/lib/og-image";
 
 export const alt = "Project preview";
@@ -18,7 +19,7 @@ export default async function ProjectOpenGraphImage({
   const project = getProjectBySlug(slug);
 
   return renderOgImage({
-    eyebrow: "Project",
+    eyebrow: project ? `Project · ${industries[project.industry].label}` : "Project",
     title: project?.title ?? "Project",
     description: project?.summary,
   });

@@ -1,21 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Carousel, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { ProjectShowcase } from "@/features/projects/components/project-showcase";
-import type { Project } from "@/features/projects/types";
+import { getFeaturedProjects } from "@/features/projects/data";
 
-const base = {
-  summary: "Short summary of what the project does and the problem it solves.",
-  year: 2026,
-  tags: ["Next.js", "TypeScript"],
-  featured: true,
-  links: {},
-} satisfies Partial<Project>;
-
-const projects: Project[] = [
-  { ...base, slug: "one", title: "First Project" },
-  { ...base, slug: "two", title: "Second Project" },
-  { ...base, slug: "three", title: "Third Project" },
-];
+const projects = getFeaturedProjects();
 
 const meta = {
   title: "Features/Projects/ProjectShowcase",
@@ -39,5 +27,5 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Projects without covers or accents: colours rotate and the drawn preview stands in. */
+/** The featured projects, each on its own accent. */
 export const Default: Story = {};

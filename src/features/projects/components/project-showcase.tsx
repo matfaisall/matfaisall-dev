@@ -1,8 +1,6 @@
 import { CarouselSlide, CarouselTrack } from "@/components/ui/carousel";
 import { ProjectStory } from "@/features/projects/components/project-story";
-import type { Project, ProjectAccent } from "@/features/projects/types";
-
-const accents: ProjectAccent[] = ["orange", "blue", "violet", "emerald"];
+import type { Project } from "@/features/projects/types";
 
 /**
  * Featured projects as a carousel of wide story cards, like Mintlify's customer stories. Render it
@@ -34,7 +32,7 @@ export function ProjectShowcase({ projects }: { projects: Project[] }) {
           index={index}
           className="carousel-dim transition-opacity duration-500 data-[active=false]:cursor-pointer data-[active=false]:opacity-50"
         >
-          <ProjectStory project={project} fallbackAccent={accents[index % accents.length]} />
+          <ProjectStory project={project} />
         </CarouselSlide>
       ))}
     </CarouselTrack>

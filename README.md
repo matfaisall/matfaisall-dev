@@ -122,9 +122,12 @@ topic lives in one folder.
     │   │   ├── data.ts            # Your bio, skills and work history
     │   │   └── types.ts           # About, Experience
     │   ├── projects/
-    │   │   ├── components/        # project-card.tsx (+ story), project-list.tsx
-    │   │   ├── data.ts            # Your projects + getProjects(), getProjectBySlug()
-    │   │   └── types.ts           # Project
+    │   │   ├── components/        # project-spotlight, project-tile, project-browser, case-study-hero, case-study-overview … (+ stories)
+    │   │   ├── industries.ts      # Industry labels and colours (badges, filter tabs)
+    │   │   ├── accents.ts         # Panel colours for the home carousel
+    │   │   ├── format.ts          # "2024–2025", "Feb 2024 – Present"
+    │   │   ├── data.ts            # Your projects + getProjects(), getProjectBySlug(), getNextProject() …
+    │   │   └── types.ts           # Project, Contribution
     │   ├── blog/
     │   │   ├── components/        # featured-post, post-tile, category-tabs, post-header, table-of-contents … (+ stories)
     │   │   ├── categories.ts      # The six categories and their tabs
@@ -135,7 +138,7 @@ topic lives in one folder.
     │       └── components/        # Contact form (later)
     │
     ├── components/                # SHARED UI, used by any feature
-    │   ├── ui/                    # Primitives: Button, Badge, Carousel, Prose (article typography), Skeleton
+    │   ├── ui/                    # Primitives: Button, Badge, Carousel, CursorTag, Marked, Prose (article typography), Skeleton
     │   ├── layout/                # Site chrome: SiteHeader, SiteFooter, AnnouncementBar, Section, StatStrip, ThemeToggle/Switcher
     │   ├── motion/                # Animation components: Reveal, TextReveal, Parallax, Wipe, PathDot, RibbonCanvas
     │   ├── seo/                   # JsonLd
@@ -160,10 +163,17 @@ topic lives in one folder.
 
 Every feature follows the same three-part pattern: **`components/`** (what it looks like),
 **`data.ts`** (what it says) and **`types.ts`** (the shape of that content). For example, to add a
-project you only edit `features/projects/data.ts`. The project then appears on `/projects` and in
-the sitemap, and gets its own page and preview image. Optional fields shape its card in the home
-carousel: `cover` (a screenshot in `/public/projects/` or a remote image whose host is in
-`images.remotePatterns`), `accent` (panel colour) and `highlights` (two big numbers).
+project you only edit `features/projects/data.ts`. The project then appears on `/projects` (under
+its `industry` tab) and in the sitemap, and gets its own case study and preview image. Each entry
+needs a `cover` and its `screenshots`: 16:10 images in `public/projects/<slug>/` (`cover.webp`,
+`screen-1.webp`, …), each screenshot with a caption. The cover sits next to the `overview`, which
+answers in plain words what the product is, who uses it and what for; the screenshots fill the
+"Screens" section. In `headline`, wrap the words to set in the serif accent in *asterisks*. The
+pages are amber throughout; only the industries have colours of their own
+(`features/projects/industries.ts`). `visual` picks the illustration its card draws
+(`project-visuals.tsx`), and `accent` and `highlights` (two big numbers) only shape its card in the
+home carousel. The images there now are Unsplash placeholders: swap each for a real screenshot
+under the same file name once you're allowed to show the product.
 
 The tech stack grid on the home page reads `stack` in `features/about/data.ts`. To add a tool, put a
 square WebP in `public/stack/` (about 120px; e.g. download the SVG from
@@ -510,9 +520,11 @@ What we take from Mintlify, and where it lives:
 | Product shot in the hero | `features/about/components/code-window.tsx`: an editor window with `about.ts`, `projects.ts` and `contact.ts`; click a file in the sidebar (or a tab on small screens) to open it. File contents come from `code-files.ts` |
 | Animated twisted-ribbon line art | `components/motion/ribbon-canvas.tsx`, in brand colours via `brand-ribbon.tsx` |
 | Mono stat chips in a strip | `components/layout/stat-strip.tsx` |
-| Bento cards with small UI illustrations | `features/about/components/capabilities.tsx`, `project-preview.tsx` |
+| Bento cards with small UI illustrations | `features/about/components/capabilities.tsx`, `features/projects/components/project-visuals.tsx` |
 | Customer logo band ("Join 20,000+ …"): a line and a link on the left, eight logo tiles on the right that swap in a diagonal wave every few seconds, split by a hairline | `features/about/components/tech-stack.tsx`, `tech-grid.tsx`, icons in `public/stack/` |
 | Customer-story carousel: wide coloured cards with a photo in their own edge-to-edge band (hairlines above and below, no rails), arrows in the section header, previous and next cards visible at the sides and faded by scroll position (`carousel-dim`) | `components/ui/carousel.tsx`, `<Section bleed>`, `features/projects/components/project-showcase.tsx`, `project-story.tsx` |
+| Industry index (mintlify.com/industries): two-tone heading, filter tabs with counts, one large spotlight card, then a grid of cards with an illustration on an amber wash and a badge in the industry's colour | `app/(site)/projects/page.tsx`, `features/projects/components/project-browser.tsx`, `project-spotlight.tsx`, `project-tile.tsx` |
+| Customer story page: industry badge, headline with a serif accent, the stack as chips, then two columns (the product in a browser window over rising amber lines; what it is, who it's for and what it's used for), numbered rows of what I built, screenshots | `app/(site)/projects/[slug]/page.tsx`, `features/projects/components/case-study-hero.tsx`, `case-study-overview.tsx`, `case-study-sections.tsx` |
 | Crisp corners: `rounded-md` buttons and chips, `rounded-xl` cards | `components/ui/button.tsx`, `badge.tsx` |
 | Faint patterns behind decoration | `bg-grid`, `bg-dots` utilities in `globals.css`, faded with `mask-*` |
 
